@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Principal Dashboard | Admin Panel{% endblock %}
+
+{% block content %}
+<!-- Premium Header Section -->
+<div class="dashboard-hero mb-4 p-4 rounded-4" style="background: linear-gradient(135deg, #0A1628 0%, #1a2a4a 100%); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201,168,76,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+    <div style="position: absolute; bottom: -30px; left: 30%; width: 150px; height: 150px; background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%); border-radius: 50%;"></div>
+    
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-2">
+                <span class="badge me-2 px-3 py-2" style="background: linear-gradient(135deg, #C9A84C, #E3C674); color: #0A1628; font-weight: 600;">
+                    <i class="fas fa-crown me-2"></i>ADMIN
+                </span>
+                <span class="badge px-3 py-2" style="background: rgba(255,255,255,0.1); color: white;">
+                    <i class="fas fa-shield-alt me-2"></i>Principal Access
+                </span>
+            </div>
+            <h3 class="fw-bold mb-2" style="color: white; font-size: 1.8rem;">
+                Welcome back, {{ user.get_full_name|default:"Principal" }}
+                <span style="font-size: 1.2rem;"></span>
+            </h3>
+            <p class="mb-0" style="color: rgba(255,255,255,0.7);">Here's your comprehensive school overview for today</p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <div class="d-inline-block px-4 py-3 rounded-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                <i class="fas fa-calendar-day me-2" style="color: #C9A84C;"></i>
+                <span style="color: white; font-weight: 500;">{{ today|date:"l, F d, Y" }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Premium Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card-premium p-4 h-100" style="background: white; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 20px rgba(0,0,0,0.04); transition: all 0.3s ease;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: 500;">TOTAL STUDENTS</p>
+                    <h2 class="fw-bold mb-0" style="font-size: 2rem; color: #0A1628;">{{ total_students }}</h2>
+                </div>
+                <div class="icon-box" style="width: 50px; height: 50px; background: linear-gradient(135deg, #19875420, #19875440); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user-graduate fs-5" style="color: #198754;"></i>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-success-subtle text-success me-2">
+                    <i class="fas fa-arrow-up me-1"></i>Active Enrollment
+                </span>
+                <small class="text-muted">Current Session</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card-premium p-4 h-100" style="background: white; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 20px rgba(0,0,0,0.04);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: 500;">TEACHING STAFF</p>
+                    <h2 class="fw-bold mb-0" style="font-size: 2rem; color: #0A1628;">{{ total_teachers }}</h2>
+                </div>
+                <div class="icon-box" style="width: 50px; height: 50px; background: linear-gradient(135deg, #C9A84C20, #C9A84C40); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-chalkboard-teacher fs-5" style="color: #C9A84C;"></i>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-warning-subtle text-warning me-2">
+                    <i class="fas fa-star me-1"></i>Qualified
+                </span>
+                <small class="text-muted">All Departments</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card-premium p-4 h-100" style="background: white; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 20px rgba(0,0,0,0.04);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: 500;">ACTIVE CLASSES</p>
+                    <h2 class="fw-bold mb-0" style="font-size: 2rem; color: #0A1628;">{{ total_classes }}</h2>
+                </div>
+                <div class="icon-box" style="width: 50px; height: 50px; background: linear-gradient(135deg, #0D6EFD20, #0D6EFD40); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-layer-group fs-5" style="color: #0D6EFD;"></i>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary-subtle text-primary me-2">
+                    <i class="fas fa-check-circle me-1"></i>Running
+                </span>
+                <small class="text-muted">All Sections</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card-premium p-4 h-100" style="background: white; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 20px rgba(0,0,0,0.04);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: 500;">TODAY'S ATTENDANCE</p>
+                    <h2 class="fw-bold mb-0" style="font-size: 2rem; color: #0A1628;">{{ today_attendance }}%</h2>
+                </div>
+                <div class="icon-box" style="width: 50px; height: 50px; background: linear-gradient(135deg, #19875420, #19875440); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-clipboard-check fs-5" style="color: #198754;"></i>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="progress flex-grow-1 me-2" style="height: 6px; border-radius: 10px;">
+                    <div class="progress-bar bg-success" style="width: {{ today_attendance }}%; border-radius: 10px;"></div>
+                </div>
+                <small class="text-success fw-bold">{{ today_attendance }}%</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <!-- Quick Actions Panel -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+            <div class="card-header bg-white border-0 pt-4 pb-0" style="border-radius: 16px 16px 0 0;">
+                <h5 class="fw-bold mb-0" style="color: #0A1628;">
+                    <i class="fas fa-bolt me-2" style="color: #C9A84C;"></i>Quick Actions
+                </h5>
+                <p class="text-muted small mb-3">Frequently used operations</p>
+            </div>
+            <div class="card-body pt-2">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'student_add' %}" class="btn-premium-action text-start p-3 rounded-3" style="background: linear-gradient(135deg, #198754, #157347); color: white; text-decoration: none; transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-user-plus fs-5 me-3"></i>
+                            <div>
+                                <strong>Add New Student</strong>
+                                <p class="mb-0 small opacity-75">Enroll a new student to the system</p>
+                            </div>
+                            <i class="fas fa-chevron-right ms-auto"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="{% url 'teacher_add' %}" class="btn-premium-action text-start p-3 rounded-3" style="background: linear-gradient(135deg, #C9A84C, #B8942E); color: #0A1628; text-decoration: none; transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-user-tie fs-5 me-3"></i>
+                            <div>
+                                <strong>Add New Teacher</strong>
+                                <p class="mb-0 small opacity-75">Onboard a new faculty member</p>
+                            </div>
+                            <i class="fas fa-chevron-right ms-auto"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="{% url 'class_add' %}" class="btn-premium-action text-start p-3 rounded-3" style="background: linear-gradient(135deg, #0D6EFD, #0A58CA); color: white; text-decoration: none; transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-plus-circle fs-5 me-3"></i>
+                            <div>
+                                <strong>Create New Class</strong>
+                                <p class="mb-0 small opacity-75">Set up a new class or section</p>
+                            </div>
+                            <i class="fas fa-chevron-right ms-auto"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="btn-premium-action text-start p-3 rounded-3" style="background: #f8f9fa; color: #0A1628; text-decoration: none; border: 1px solid #dee2e6; transition: all 0.3s ease;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-file-export fs-5 me-3" style="color: #6c757d;"></i>
+                            <div>
+                                <strong>Generate Reports</strong>
+                                <p class="mb-0 small text-muted">Export attendance & performance data</p>
+                            </div>
+                            <i class="fas fa-chevron-right ms-auto" style="color: #6c757d;"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- School Overview & Insights -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+            <div class="card-header bg-white border-0 pt-4 pb-0" style="border-radius: 16px 16px 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-0" style="color: #0A1628;">
+                            <i class="fas fa-chart-line me-2" style="color: #C9A84C;"></i>School Overview
+                        </h5>
+                        <p class="text-muted small mb-0">Key metrics and insights</p>
+                    </div>
+                    <span class="badge px-3 py-2" style="background: #f8f9fa; color: #0A1628; border: 1px solid #dee2e6;">
+                        <i class="fas fa-sync-alt me-1"></i> Live Data
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="insight-item p-3 rounded-3" style="background: #f8f9fa;">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-3" style="width: 40px; height: 40px; background: linear-gradient(135deg, #19875420, #19875440); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-users" style="color: #198754;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Student-Teacher Ratio</h6>
+                                    <small class="text-muted">Ideal ratio for quality education</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h4 class="fw-bold mb-0" style="color: #198754;">
+                                    {% if total_teachers > 0 %}
+                                        {{ total_students|divisibleby:total_teachers|floatformat:1 }}:1
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </h4>
+                                <span class="badge bg-success-subtle text-success">Optimal</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="insight-item p-3 rounded-3" style="background: #f8f9fa;">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-3" style="width: 40px; height: 40px; background: linear-gradient(135deg, #C9A84C20, #C9A84C40); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-clock" style="color: #C9A84C;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Attendance Overview</h6>
+                                    <small class="text-muted">Today's participation rate</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h4 class="fw-bold mb-0" style="color: #198754;">{{ today_attendance }}%</h4>
+                                <div class="progress flex-grow-1 mx-3" style="height: 8px; border-radius: 10px;">
+                                    <div class="progress-bar bg-success" style="width: {{ today_attendance }}%; border-radius: 10px;"></div>
+                                </div>
+                                <span class="badge {% if today_attendance >= 90 %}bg-success{% elif today_attendance >= 75 %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {% if today_attendance >= 90 %}Excellent{% elif today_attendance >= 75 %}Good{% else %}Needs Attention{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="premium-info-banner p-4 rounded-3" style="background: linear-gradient(135deg, #fff9e6, #fff3cc); border: 1px solid #C9A84C; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: radial-gradient(circle, rgba(201,168,76,0.3) 0%, transparent 70%); border-radius: 50%;"></div>
+                            <div class="d-flex align-items-start position-relative">
+                                <i class="fas fa-lightbulb fs-4 me-3" style="color: #C9A84C;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1" style="color: #0A1628;">Administrative Insights</h6>
+                                    <p class="mb-0 text-muted small">
+                                        Monitor your institution's performance with real-time analytics. 
+                                        Use the quick actions panel to manage students, teachers, and classes efficiently.
+                                        {% if today_attendance < 90 %}
+                                            <br><strong class="text-warning">⚠️ Attendance Alert:</strong> Today's attendance is below 90%. Consider following up with absent students.
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Premium Footer Note -->
+<div class="text-center mt-4">
+    <p class="text-muted small mb-0">
+        <i class="fas fa-shield-alt me-1" style="color: #C9A84C;"></i>
+        Principal Dashboard • Secure Administrative Access
+        <span class="mx-2">|</span>
+        <i class="fas fa-sync-alt me-1" style="color: #198754;"></i>
+        Real-time data updates enabled
+    </p>
+</div>
+
+<style>
+/* Premium hover effects */
+.stat-card-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.btn-premium-action:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Smooth transitions */
+.stat-card-premium, .btn-premium-action {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-hero h3 {
+        font-size: 1.4rem !important;
+    }
+    
+    .stat-card-premium h2 {
+        font-size: 1.5rem !important;
+    }
+}
+</style>
+
+<script>
+// Add subtle animation on load
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.stat-card-premium');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+});
+</script>
+{% endblock %}

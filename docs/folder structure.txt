@@ -1,0 +1,84 @@
+smart_attendance_system/
+│
+├── manage.py
+├── requirements.txt
+├── .env
+├── README.md
+│
+├── config/                         # Main project configuration
+│   ├── __init__.py
+│   ├── settings.py                 # Base settings
+│   ├── urls.py                    # Main URL routing
+│   ├── asgi.py
+│   ├── wsgi.py
+│
+├── apps/                          # All Django apps (modular structure)
+│   │
+│   ├── accounts/                  # Authentication & roles
+│   │   ├── migrations/
+│   │   ├── templates/accounts/
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── forms.py
+│   │   └── services.py
+│   │
+│   ├── students/                 # Student management
+│   │   ├── migrations/
+│   │   ├── templates/students/
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── forms.py
+│   │   └── services.py
+│   │
+│   ├── teachers/                # Teacher management
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   └── forms.py
+│   │
+│   ├── classes/                 # Grades, sections, class mapping
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   └── urls.py
+│   │
+│   ├── attendance/             # Core attendance system
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── services.py         # Attendance logic
+│   │   └── face_recognition.py # AI logic integration
+│   │
+│   ├── notifications/          # Email system
+│   │   ├── email_service.py
+│   │   ├── models.py
+│   │   └── tasks.py
+│   │
+│   ├── audit/                  # Logs & tracking
+│   │   ├── models.py
+│   │   └── services.py
+│   │
+│   └── dashboard/              # UI dashboards (Principal/Teacher)
+│       ├── views.py
+│       ├── urls.py
+│       └── templates/dashboard/
+│
+├── templates/                  # Global templates (base layout)
+│   ├── base.html
+│   ├── navbar.html
+│   └── footer.html
+│
+├── static/                     # Bootstrap, CSS, JS
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── media/                      # Uploaded student images
+│   ├── students/
+│
+└── utils/                      # Helper functions
+    ├── helpers.py
+    ├── constants.py
+    └── face_utils.py

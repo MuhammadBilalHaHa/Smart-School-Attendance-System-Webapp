@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile | Account Settings{% endblock %}
+
+{% block content %}
+
+<!-- ===== PREMIUM HEADER ===== -->
+<div class="dashboard-hero mb-4 p-4 rounded-4" style="background: linear-gradient(135deg, #0A1628 0%, #1a2a4a 100%); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%); border-radius: 50%;"></div>
+    <div style="position: absolute; bottom: -30px; left: 20%; width: 150px; height: 150px; background: radial-gradient(circle, rgba(13,110,253,0.1) 0%, transparent 70%); border-radius: 50%;"></div>
+    
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-2">
+                <span class="badge me-2 px-3 py-2" style="background: linear-gradient(135deg, #C9A84C, #E3C674); color: #0A1628; font-weight: 600;">
+                    <i class="fas fa-cog me-2"></i>ACCOUNT SETTINGS
+                </span>
+                <span class="badge px-3 py-2" style="background: rgba(255,255,255,0.1); color: white;">
+                    <i class="fas fa-shield-alt me-2"></i>{{ user.role|title }}
+                </span>
+            </div>
+            <h3 class="fw-bold mb-2" style="color: white; font-size: 1.8rem;">
+                <i class="fas fa-user-circle me-2" style="color: #C9A84C;"></i>My Profile
+            </h3>
+            <p class="mb-0" style="color: rgba(255,255,255,0.7);">
+                <i class="fas fa-user-edit me-2"></i>Manage your account information and security settings
+            </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <div class="d-inline-block text-center">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #C9A84C, #E3C674);">
+                    <span style="font-size: 2rem; font-weight: 800; color: #0A1628;">
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                    </span>
+                </div>
+                <div style="color: white; font-weight: 600;">
+                    {{ user.get_full_name|default:user.username }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        
+        <!-- ===== PROFILE INFO CARD ===== -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
+            <div class="card-header bg-white border-0 pt-4 pb-3" style="border-radius: 16px 16px 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-0" style="color: #0A1628;">
+                            <i class="fas fa-user-circle me-2" style="color: #C9A84C;"></i> Account Information
+                        </h5>
+                        <p class="text-muted small mb-0 mt-1">Update your personal details</p>
+                    </div>
+                    <span class="badge px-3 py-2" style="background: #f8f9fa; color: #0A1628; border: 1px solid #dee2e6;">
+                        <i class="fas fa-asterisk text-danger me-1" style="font-size: 0.5rem;"></i> Required fields
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{% url 'profile' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-user me-1" style="color: #C9A84C;"></i> First Name
+                            </label>
+                            <input type="text" name="first_name" class="form-control" 
+                                   value="{{ user.first_name }}" 
+                                   placeholder="Enter first name"
+                                   style="border-radius: 8px;">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-user me-1" style="color: #C9A84C;"></i> Last Name
+                            </label>
+                            <input type="text" name="last_name" class="form-control" 
+                                   value="{{ user.last_name }}" 
+                                   placeholder="Enter last name"
+                                   style="border-radius: 8px;">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-at me-1" style="color: #C9A84C;"></i> Username <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="username" id="id_username" class="form-control" 
+                                   value="{{ user.username }}" required 
+                                   pattern="[a-z0-9]+" 
+                                   title="Only lowercase letters and numbers allowed"
+                                   oninput="this.value = this.value.replace(/[A-Z]/g, '')"
+                                   style="border-radius: 8px;">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>Only lowercase letters (a-z) and numbers (0-9)
+                            </small>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-envelope me-1" style="color: #C9A84C;"></i> Email Address
+                            </label>
+                            <input type="email" name="email" class="form-control" 
+                                   value="{{ user.email }}" 
+                                   placeholder="Enter email address"
+                                   style="border-radius: 8px;">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-briefcase me-1" style="color: #C9A84C;"></i> Role
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #f8f9fa; border-right: none;">
+                                    <i class="fas fa-shield-alt" style="color: #C9A84C;"></i>
+                                </span>
+                                <input type="text" class="form-control bg-light" value="{{ user.role|title }}" disabled
+                                       style="border-radius: 0 8px 8px 0;">
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-lock me-1"></i>Role cannot be changed
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn px-4 fw-bold" 
+                                style="background: linear-gradient(135deg, #C9A84C, #E3C674); color: #0A1628; border-radius: 10px;">
+                            <i class="fas fa-save me-2"></i> Update Profile
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary px-4" style="border-radius: 10px;">
+                            <i class="fas fa-undo me-2"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- ===== CHANGE PASSWORD CARD ===== -->
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+            <div class="card-header bg-white border-0 pt-4 pb-3" style="border-radius: 16px 16px 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-0" style="color: #0A1628;">
+                            <i class="fas fa-lock me-2" style="color: #C9A84C;"></i> Change Password
+                        </h5>
+                        <p class="text-muted small mb-0 mt-1">Update your account security credentials</p>
+                    </div>
+                    <span class="badge px-3 py-2" style="background: #fef3c7; color: #92400e; border-radius: 8px;">
+                        <i class="fas fa-shield-alt me-1"></i> Security
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{% url 'change_password' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-key me-1" style="color: #C9A84C;"></i> Current Password <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #f8f9fa; border-right: none;">
+                                    <i class="fas fa-lock" style="color: #C9A84C;"></i>
+                                </span>
+                                <input type="password" name="old_password" class="form-control" 
+                                       placeholder="Enter current password" required
+                                       style="border-radius: 0 8px 8px 0;">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-plus-circle me-1" style="color: #C9A84C;"></i> New Password <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #f8f9fa; border-right: none;">
+                                    <i class="fas fa-key" style="color: #C9A84C;"></i>
+                                </span>
+                                <input type="password" name="new_password" class="form-control" 
+                                       placeholder="Min 6 characters" minlength="6" required
+                                       style="border-radius: 0 8px 8px 0;">
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>Minimum 6 characters
+                            </small>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" style="color: #0A1628;">
+                                <i class="fas fa-check-double me-1" style="color: #C9A84C;"></i> Confirm Password <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #f8f9fa; border-right: none;">
+                                    <i class="fas fa-check" style="color: #C9A84C;"></i>
+                                </span>
+                                <input type="password" name="confirm_password" class="form-control" 
+                                       placeholder="Re-enter new password" required
+                                       style="border-radius: 0 8px 8px 0;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Password strength indicator -->
+                    <div class="mt-3" id="passwordStrength" style="display: none;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="fw-semibold">Password Strength</small>
+                            <small id="strengthText" class="fw-bold"></small>
+                        </div>
+                        <div class="progress" style="height: 6px; border-radius: 4px;">
+                            <div id="strengthBar" class="progress-bar" style="width: 0%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn px-4 fw-bold" 
+                                style="background: linear-gradient(135deg, #0A1628, #1a2a4a); color: white; border-radius: 10px;">
+                            <i class="fas fa-shield-alt me-2"></i> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- ===== SECURITY TIPS CARD ===== -->
+        <div class="card border-0 shadow-sm mt-4" style="border-radius: 16px; background: linear-gradient(135deg, #fff9e6, #fff3cc); border: 1px solid #C9A84C;">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3" style="color: #0A1628;">
+                    <i class="fas fa-lightbulb me-2" style="color: #C9A84C;"></i>Security Tips
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small class="text-muted">Use a mix of letters, numbers, and special characters</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small class="text-muted">Avoid using personal information in passwords</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small class="text-muted">Change your password regularly for better security</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<style>
+/* Form input styling */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #C9A84C;
+    box-shadow: 0 0 0 0.2rem rgba(201, 168, 76, 0.25);
+}
+
+.input-group .form-control {
+    border-radius: 0;
+}
+
+/* Card hover effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Button hover effects */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+/* Fade in animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.col-lg-8 .card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.col-lg-8 .card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.col-lg-8 .card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-hero h3 {
+        font-size: 1.4rem !important;
+    }
+    
+    .col-md-4 {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+<script>
+// Password strength checker
+document.addEventListener('DOMContentLoaded', function() {
+    const newPasswordInput = document.querySelector('input[name="new_password"]');
+    const strengthIndicator = document.getElementById('passwordStrength');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    
+    if (newPasswordInput) {
+        newPasswordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            if (password.length > 0) {
+                strengthIndicator.style.display = 'block';
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 6) strength += 20;
+                if (password.length >= 8) strength += 20;
+                
+                // Complexity checks
+                if (/[a-z]/.test(password)) strength += 15;
+                if (/[A-Z]/.test(password)) strength += 15;
+                if (/[0-9]/.test(password)) strength += 15;
+                if (/[^a-zA-Z0-9]/.test(password)) strength += 15;
+                
+                strengthBar.style.width = strength + '%';
+                
+                // Color and text based on strength
+                if (strength < 40) {
+                    strengthBar.className = 'progress-bar bg-danger';
+                    strengthText.className = 'fw-bold text-danger';
+                    strengthText.textContent = 'Weak';
+                } else if (strength < 70) {
+                    strengthBar.className = 'progress-bar bg-warning';
+                    strengthText.className = 'fw-bold text-warning';
+                    strengthText.textContent = 'Medium';
+                } else {
+                    strengthBar.className = 'progress-bar bg-success';
+                    strengthText.className = 'fw-bold text-success';
+                    strengthText.textContent = 'Strong';
+                }
+            } else {
+                strengthIndicator.style.display = 'none';
+            }
+        });
+    }
+    
+    // Password confirmation check
+    const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+    
+    if (confirmPasswordInput && newPasswordInput) {
+        confirmPasswordInput.addEventListener('input', function() {
+            if (this.value !== newPasswordInput.value) {
+                this.style.borderColor = '#dc3545';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(220, 53, 69, 0.25)';
+            } else {
+                this.style.borderColor = '#198754';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(25, 135, 84, 0.25)';
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,303 @@
+```html
+{% extends 'base.html' %}
+
+{% block title %}Attendance History{% endblock %}
+
+{% block content %}
+<!-- Refined Administrative Header Matrix -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom pb-3 mb-4">
+    <div>
+        <span class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.72rem; letter-spacing: 0.08em; color: #C9A84C;">
+            Historical Audit Logs & Ledgers
+        </span>
+        <h4 class="fw-bold mb-1" style="color: #0A1628; letter-spacing: -0.02em;">
+            <i class="fas fa-history me-2" style="color: #C9A84C;"></i> Attendance History
+        </h4>
+        <p class="text-muted small mb-0">
+            {% if user.is_teacher %}Your class validation files and operational rosters{% else %}Comprehensive institution-wide system analytics{% endif %}
+        </p>
+    </div>
+    {% if user.is_teacher %}
+    <div class="mt-3 mt-md-0">
+        <a href="{% url 'start_attendance' %}" class="btn btn-gold px-4 fw-bold text-uppercase font-monospace py-2" style="font-size: 0.78rem; letter-spacing: 0.03em;">
+            <i class="fas fa-plus me-1.5"></i> Take Attendance
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Advanced Multi-Axis Filters (Principal Control Loop Only) -->
+{% if user.is_principal %}
+<div class="card border-0 shadow-sm mb-4 animate-fade-in" style="border-radius: 12px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
+    <div class="card-body py-3 px-4">
+        <form method="GET" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <span class="text-uppercase fw-bold text-muted font-monospace" style="font-size: 0.68rem; letter-spacing: 0.05em;">
+                    <i class="fas fa-filter me-1"></i> Filtering Parameters Matrix:
+                </span>
+            </div>
+            <div class="col-sm-auto d-flex align-items-center gap-2">
+                <label class="form-label small mb-0 fw-semibold text-secondary">Period</label>
+                <select name="period" class="form-select form-select-sm custom-filter-select" onchange="this.form.submit()" style="border-radius: 6px; min-width: 130px; font-size: 0.82rem;">
+                    <option value="all"   {% if selected_period == 'all'   %}selected{% endif %}>All Time</option>
+                    <option value="day"   {% if selected_period == 'day'   %}selected{% endif %}>Today</option>
+                    <option value="week"  {% if selected_period == 'week'  %}selected{% endif %}>This Week</option>
+                    <option value="month" {% if selected_period == 'month' %}selected{% endif %}>This Month</option>
+                    <option value="year"  {% if selected_period == 'year'  %}selected{% endif %}>This Year</option>
+                </select>
+            </div>
+            <div class="col-md-4 col-sm-auto d-flex align-items-center gap-2">
+                <label class="form-label small mb-0 fw-semibold text-secondary">Class Structure</label>
+                <select name="class" class="form-select form-select-sm custom-filter-select" onchange="this.form.submit()" style="border-radius: 6px; font-size: 0.82rem;">
+                    <option value="">All Active Classes</option>
+                    {% for c in classes %}
+                    <option value="{{ c.pk }}" {% if selected_class == c.pk|stringformat:"s" %}selected{% endif %}>
+                        Grade {{ c.grade.grade_name }} - {{ c.section.section_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if selected_class or selected_period != 'all' %}
+            <div class="col-auto ms-sm-auto">
+                <a href="{% url 'attendance_history' %}" class="btn btn-sm btn-outline-secondary px-3 font-monospace text-uppercase fw-bold" style="font-size: 0.7rem; border-radius: 6px; letter-spacing: 0.02em;">
+                    <i class="fas fa-times me-1"></i> Clear Vectors
+                </a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<!-- Dual Engine Architecture: Session Ledger + Cohort Explorer -->
+<div class="row g-4">
+
+    <!-- Primary Ledger Frame: Session Records -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 14px; overflow: hidden; background: #FFFFFF;">
+            <div class="card-header bg-white py-3 border-bottom border-light">
+                <h6 class="fw-bold mb-0 text-dark">
+                    <i class="fas fa-calendar-check me-2" style="color: #C9A84C;"></i>
+                    Session Registry Indices
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 custom-history-table">
+                        <thead class="text-uppercase font-monospace border-bottom" style="font-size: 0.68rem; letter-spacing: 0.05em; background-color: #F8FAFC; color: #475569;">
+                            <tr>
+                                <th class="ps-4 py-3">Date Matrix</th>
+                                {% if user.is_principal %}<th>Class Hierarchy</th>{% endif %}
+                                <th>Capture Mode</th>
+                                <th class="text-success text-center fw-bold" style="background: rgba(16, 185, 129, 0.03);">P</th>
+                                <th class="text-danger text-center fw-bold" style="background: rgba(239, 68, 68, 0.03);">A</th>
+                                <th class="text-warning text-center fw-bold" style="background: rgba(245, 158, 11, 0.03);">L</th>
+                                <th>Yield Rate</th>
+                                <th>Lifecycle State</th>
+                                <th class="pe-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sessions %}
+                            <tr class="align-middle">
+                                <td class="fw-semibold ps-4 text-dark" style="font-size: 0.88rem;">
+                                    {{ session.attendance_date|date:"M d, Y" }}
+                                </td>
+                                {% if user.is_principal %}
+                                <td>
+                                    <span class="fw-medium text-dark" style="font-size: 0.82rem;">{{ session.class_info }}</span>
+                                </td>
+                                {% endif %}
+                                <td>
+                                    <span class="badge border bg-light text-dark font-monospace px-2 py-1.5 rounded" style="font-size: 0.68rem; border-color: #E2E8F0 !important; font-weight: 500;">
+                                        {% if session.mode == 'Automatic' %}
+                                            <i class="fas fa-camera text-primary me-1"></i>
+                                        {% else %}
+                                            <i class="fas fa-hand-pointer text-info me-1"></i>
+                                        {% endif %}
+                                        {{ session.mode }}
+                                    </span>
+                                </td>
+                                <td class="text-success fw-bold text-center font-monospace" style="font-size: 0.92rem; background: rgba(16, 185, 129, 0.01);">{{ session.count_present }}</td>
+                                <td class="text-danger fw-bold text-center font-monospace" style="font-size: 0.92rem; background: rgba(239, 68, 68, 0.01);">{{ session.count_absent }}</td>
+                                <td class="text-warning fw-bold text-center font-monospace" style="font-size: 0.92rem; background: rgba(245, 158, 11, 0.01);">{{ session.count_late }}</td>
+                                <td>
+                                    {% if session.count_total > 0 %}
+                                        {% widthratio session.count_present session.count_total 100 as pct %}
+                                        <span class="badge font-monospace fw-bold px-2 py-1.5 rounded" style="font-size: 0.7rem; {% if pct >= 80 %}background-color: #E6F4EA; color: #137333; border: 1px solid #A3E635 !important;{% elif pct >= 60 %}background-color: #FEF3C7; color: #92400E; border: 1px solid #FCD34D !important;{% else %}background-color: #FCE8E6; color: #C5221F; border: 1px solid #F9ACA8 !important;{% endif %}">
+                                            {{ pct }}%
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-light text-muted border font-monospace px-2 py-1.5" style="font-size: 0.68rem;">VOID</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if session.is_finalized %}
+                                        <span class="badge rounded px-2 py-1.5 font-monospace text-uppercase" style="background-color: #F1F5F9; color: #475569; border: 1px solid #CBD5E1 !important; font-size: 0.64rem; letter-spacing: 0.02em;">
+                                            <i class="fas fa-lock me-1 opacity-75"></i> Finalized
+                                        </span>
+                                    {% else %}
+                                        <span class="badge rounded px-2 py-1.5 font-monospace text-uppercase" style="background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE !important; font-size: 0.64rem; letter-spacing: 0.02em;">
+                                            <i class="fas fa-pen-to-square me-1"></i> Draft
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <a href="{% url 'attendance_summary' session.pk %}" class="btn btn-sm btn-outline-light border text-dark custom-btn-action" title="Audit Block Detail View">
+                                        <i class="fas fa-arrow-right text-muted" style="font-size: 0.75rem;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="{% if user.is_principal %}9{% else %}8{% endif %}" class="text-center py-5 text-muted">
+                                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3 border shadow-inner" style="width: 74px; height: 74px;">
+                                        <i class="fas fa-calendar-xmark text-muted opacity-50 fs-4"></i>
+                                    </div>
+                                    <p class="mb-0 small fw-medium text-dark">No historical system logs found match standard query protocols.</p>
+                                    {% if user.is_teacher %}
+                                    <a href="{% url 'start_attendance' %}" class="btn btn-sm btn-gold mt-3 text-uppercase font-monospace fw-bold px-3 py-2" style="font-size: 0.72rem; letter-spacing: 0.03em;">
+                                        Initialize Active Registry Block
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Explorer Frame: Directory List -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 14px; overflow: hidden; background: #FFFFFF;">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom border-light">
+                <h6 class="fw-bold mb-0 text-dark">
+                    <i class="fas fa-users me-2" style="color: #C9A84C;"></i>
+                    {% if user.is_teacher %}Cohort Directory{% else %}Student Registry{% endif %}
+                </h6>
+                <span class="badge bg-light text-dark border font-monospace px-2.5 py-1" style="border-color: #E2E8F0 !important; font-size: 0.72rem;">{{ students|length }} Entries</span>
+            </div>
+
+            <!-- Parametric Dynamic Query Input -->
+            <div class="p-3 bg-light-subtle border-bottom">
+                <div class="input-group input-group-sm custom-search-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #CBD5E1;"><i class="fas fa-magnifying-glass" style="font-size: 0.78rem;"></i></span>
+                    <input type="text" id="studentSearch" class="form-control border-start-0 ps-1" placeholder="Filter roster index records..." style="font-size: 0.82rem; border-color: #CBD5E1;">
+                </div>
+            </div>
+
+            <!-- Scroll Partition Container -->
+            <div class="card-body p-0 custom-scroll-tray" style="max-height: 520px; overflow-y: auto; scrollbar-width: thin;">
+                <div class="list-group list-group-flush" id="studentList">
+                    {% for student in students %}
+                    <div class="list-group-item list-group-item-action p-3 student-item border-bottom border-light transition-all position-relative" style="border-left: 3px solid transparent;">
+                        <a href="{% url 'student_attendance_history' student.pk %}" class="text-decoration-none d-flex justify-content-between align-items-center w-100">
+                            <div>
+                                <div class="fw-bold text-dark mb-0.5 student-name" style="font-size: 0.88rem; letter-spacing: -0.01em;">
+                                    {{ student.full_name }}
+                                </div>
+                                <div class="text-muted font-monospace d-flex align-items-center gap-1.5 student-meta" style="font-size: 0.72rem;">
+                                    <span>Roll: {{ student.roll_no|default:"—" }}</span>
+                                    {% if user.is_principal %}
+                                    <span class="opacity-40">•</span>
+                                    <span class="text-truncate d-inline-block" style="max-width: 130px;">{{ student.student_class }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="student-action-arrow bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; transition: background-color 0.2s, transform 0.2s;">
+                                <i class="fas fa-chevron-right text-muted" style="font-size: 0.65rem;"></i>
+                            </div>
+                        </a>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted bg-white">
+                        <i class="fas fa-user-slash d-block opacity-30 fs-3 mb-2"></i>
+                        <span class="small font-monospace text-muted">Roster Index Unpopulated</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Real-time Matrix Filter Engine -->
+<script>
+document.getElementById('studentSearch').addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    document.querySelectorAll('.student-item').forEach(function (item) {
+        const name = item.querySelector('.student-name').textContent.toLowerCase();
+        const meta = item.querySelector('.student-meta').textContent.toLowerCase();
+        if (name.includes(query) || meta.includes(query)) {
+            item.style.setProperty('display', '', 'important');
+        } else {
+            item.style.setProperty('display', 'none', 'important');
+        }
+    });
+});
+</script>
+
+<!-- Embedded UI Enhancement Stylesheets -->
+<style>
+    .custom-filter-select:focus,
+    .custom-search-group .form-control:focus {
+        box-shadow: none !important;
+        border-color: #CBD5E1 !important;
+    }
+    .custom-history-table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+    .custom-history-table tbody tr:hover {
+        background-color: #F8FAFC !important;
+    }
+    .custom-btn-action {
+        border-color: #E2E8F0 !important; 
+        border-radius: 6px;
+        background: #FFF;
+        padding: 0.35rem 0.55rem;
+        transition: all 0.15s ease;
+    }
+    .custom-btn-action:hover {
+        background: #F1F5F9 !important;
+        border-color: #CBD5E1 !important;
+    }
+    .student-item:hover {
+        border-left-color: #C9A84C !important;
+        background-color: #FAFAFA;
+    }
+    .student-item:hover .student-action-arrow {
+        background-color: #0A1628 !important;
+        transform: translateX(2px);
+    }
+    .student-item:hover .student-action-arrow i {
+        color: #FFF !important;
+    }
+    .btn-gold {
+        background-color: #C9A84C;
+        color: #FFFFFF;
+        border: 1px solid #C9A84C;
+        transition: all 0.2s ease;
+    }
+    .btn-gold:hover, .btn-gold:focus {
+        background-color: #B5943B;
+        border-color: #B5943B;
+        color: #FFFFFF;
+    }
+    .custom-scroll-tray::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scroll-tray::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scroll-tray::-webkit-scrollbar-thumb {
+        background: #E2E8F0;
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}
+
+```

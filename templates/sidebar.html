@@ -1,0 +1,171 @@
+<div class="sidebar d-flex flex-column" 
+     style="width: 260px; 
+            background: linear-gradient(180deg, #070F19 0%, #0F1F3A 100%); 
+            position: fixed; 
+            left: 0; 
+            top: 56px; 
+            bottom: 0; 
+            overflow-y: auto; 
+            z-index: 1020;
+            border-right: 1px solid rgba(201, 168, 76, 0.15);
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+    
+    <div class="flex-grow-1 px-2 py-4">
+        <ul class="nav flex-column gap-1">
+            
+            <li class="nav-item">
+                <a class="nav-link {% if 'dashboard' in request.path %}active{% endif %}" href="{% url 'dashboard' %}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+
+            {% if user.is_principal %}
+                <li class="nav-item mt-4">
+                    <small class="text-uppercase px-3 mb-2 d-block sidebar-heading">Management</small>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'teachers' in request.path %}active{% endif %}" href="{% url 'teacher_list' %}">
+                        <i class="fas fa-user-tie"></i> Teachers
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'students' in request.path %}active{% endif %}" href="{% url 'student_list' %}">
+                        <i class="fas fa-user-graduate"></i> Students
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'classes' in request.path %}active{% endif %}" href="{% url 'class_list' %}">
+                        <i class="fas fa-layer-group"></i> Classes
+                    </a>
+                </li>
+                
+                <li class="nav-item mt-4">
+                    <small class="text-uppercase px-3 mb-2 d-block sidebar-heading">Attendance</small>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'report' in request.path %}active{% endif %}" href="{% url 'attendance_report' %}">
+                        <i class="fas fa-chart-bar"></i> Attendance Report
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'history' in request.path %}active{% endif %}" href="{% url 'attendance_history' %}">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                </li>
+                
+            {% endif %}
+
+            {% if user.is_teacher %}
+                <li class="nav-item mt-4">
+                    <small class="text-uppercase px-3 mb-2 d-block sidebar-heading">Classroom</small>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'start' in request.path or 'take' in request.path %}active{% endif %}" href="{% url 'start_attendance' %}">
+                        <i class="fas fa-clipboard-check"></i> Take Attendance
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'students' in request.path %}active{% endif %}" href="{% url 'student_list' %}">
+                        <i class="fas fa-users"></i> My Students
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {% if 'history' in request.path %}active{% endif %}" href="{% url 'attendance_history' %}">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    
+    <div class="p-3 border-top border-light border-opacity-10 text-center" style="background: rgba(0,0,0,0.15);">
+        <small class="text-light" style="font-size: 0.72rem; opacity: 0.5; letter-spacing: 0.3px;">
+            v1.0 • Smart Attendance System
+        </small>
+    </div>
+</div>
+
+<style>
+    /* Premium Sidebar Styling */
+    .sidebar-heading {
+        font-size: 0.72rem; 
+        letter-spacing: 1.5px; 
+        font-weight: 700; 
+        color: #E5D4A3; 
+        opacity: 0.65;
+    }
+
+    .sidebar .nav-link {
+        color: #b9bfc7;
+        padding: 11px 16px;
+        border-radius: 10px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        margin: 3px 12px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .sidebar .nav-link i { 
+        width: 24px; 
+        margin-right: 12px; 
+        text-align: center; 
+        font-size: 1.05rem; 
+        color: #8a94a6;
+        transition: color 0.25s ease;
+    }
+
+    /* Hover State */
+    .sidebar .nav-link:hover { 
+        color: #fff; 
+        background: rgba(201, 168, 76, 0.08) !important; 
+        transform: translateX(5px);
+    }
+    
+    .sidebar .nav-link:hover i {
+        color: #E5D4A3;
+    }
+
+    /* Premium Active State */
+    .sidebar .nav-link.active { 
+        color: #fff !important; 
+        background: rgba(201, 168, 76, 0.14) !important; 
+        border: 1px solid rgba(201, 168, 76, 0.2);
+        font-weight: 600; 
+    }
+    
+    .sidebar .nav-link.active i { 
+        color: #E5D4A3 !important; 
+        filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.5));
+    }
+
+    /* Active Left Accent Pill */
+    .sidebar .nav-link.active::before {
+        content: '';
+        position: absolute;
+        left: -12px;
+        top: 25%;
+        height: 50%;
+        width: 4px;
+        background: #C9A84C;
+        border-radius: 0 4px 4px 0;
+        box-shadow: 2px 0 10px rgba(201, 168, 76, 0.8);
+    }
+
+    /* Responsive Logic */
+    @media (max-width: 768px) {
+        .sidebar { transform: translateX(-100%); }
+        .sidebar.show { transform: translateX(0); }
+    }
+</style>

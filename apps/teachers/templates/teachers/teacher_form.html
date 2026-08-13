@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} Teacher Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center animate-fade-in">
+    <div class="col-md-9 col-lg-8">
+        
+        <!-- Navigation Back-Link -->
+        <div class="mb-3">
+            <a href="{% url 'teacher_list' %}" class="text-decoration-none text-secondary small fw-semibold tracking-wide text-uppercase d-inline-flex align-items-center gap-1 hover-gold">
+                <i class="fas fa-arrow-left" style="font-size: 0.75rem;"></i> Back to Faculty Ledger
+            </a>
+        </div>
+
+        <!-- Central Entry Card -->
+        <div class="card border-0 shadow-sm overflow-hidden mb-5" style="border-radius: 12px; border: 1px solid #edf2f9 !important;">
+            <!-- Primary Structural Accent Bar -->
+            <div class="p-1" style="background-color: #0A1628;"></div>
+            
+            <div class="card-header bg-white border-bottom border-light py-3.5 px-4">
+                <span class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em; color: #C9A84C;">
+                    Registry Provisioning
+                </span>
+                <h5 class="mb-0 fw-bold d-flex align-items-center gap-2" style="color: #0A1628; letter-spacing: -0.01em;">
+                    <span class="fa-stack text-secondary opacity-90" style="font-size: 0.85rem;">
+                        <i class="fas fa-circle fa-stack-2x text-light"></i>
+                        <i class="fas fa-user-tie fa-stack-1x text-dark"></i>
+                    </span>
+                    {% if object %}Modify Faculty Member{% else %}Provision New Faculty Profile{% endif %}
+                </h5>
+            </div>
+            
+            <div class="card-body p-4 bg-white">
+                <form method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    
+                    <!-- Form Fields Grid Matrix -->
+                    <div class="row g-4">
+                        {% for field in form %}
+                        <div class="col-md-6 form-field-group">
+                            <label class="form-label text-uppercase font-monospace text-secondary tracking-wider fw-bold mb-1.5" style="font-size: 0.68rem;">
+                                {{ field.label }}
+                                {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                            </label>
+                            
+                            <div class="input-wrapper position-relative">
+                                {{ field }}
+                            </div>
+
+                            {% if field.help_text %}
+                                <div class="form-text text-muted extra-small mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1.5 d-flex align-items-start gap-1 font-monospace fw-medium" style="font-size: 0.75rem;">
+                                    <i class="fas fa-exclamation-circle mt-0.5"></i>
+                                    <span>{{ field.errors|striptags }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Action Registry Tray -->
+                    <div class="border-top border-light mt-4.5 pt-4 d-flex align-items-center justify-content-end gap-2.5">
+                        <a href="{% url 'teacher_list' %}" class="btn btn-cancel px-4 py-2 fw-semibold text-uppercase font-monospace tracking-wider" style="font-size: 0.75rem;">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-gold px-4 py-2 fw-bold text-uppercase shadow-sm shrink-on-click" style="letter-spacing: 0.05em; font-size: 0.75rem;">
+                            <i class="fas fa-save me-1.5"></i> Commit Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Premium Form Styling Architecture */
+    .border-light {
+        border-color: #edf2f9 !important;
+    }
+    .extra-small {
+        font-size: 0.7rem;
+    }
+    .mt-1.5 { margin-top: 0.35rem !important; }
+    .mb-1.5 { margin-bottom: 0.35rem !important; }
+    .mt-4.5 { margin-top: 2.25rem !important; }
+    .gap-2.5 { gap: 0.65rem !important; }
+    .tracking-wider { letter-spacing: 0.06em; }
+    
+    /* Interactive Back Button States */
+    .hover-gold {
+        transition: color 0.15s ease-in-out;
+    }
+    .hover-gold:hover {
+        color: #C9A84C !important;
+    }
+    
+    /* Micro-Interactions */
+    .shrink-on-click:active {
+        transform: scale(0.98);
+    }
+    
+    /* Cancel Trigger Design */
+    .btn-cancel {
+        color: #64748B;
+        background-color: transparent;
+        border: 1px solid #E2E8F0;
+        border-radius: 6px;
+        transition: all 0.15s ease-in-out;
+    }
+    .btn-cancel:hover {
+        color: #1E293B;
+        background-color: #F8FAFC;
+        border-color: #CBD5E1;
+    }
+
+    /* Native Django Field Injection Decorators */
+    .form-field-group input, 
+    .form-field-group select, 
+    .form-field-group textarea {
+        display: block;
+        width: 100%;
+        padding: 0.475rem 0.75rem;
+        font-size: 0.87rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #1E293B;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #CBD5E1;
+        border-radius: 6px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    /* Active Field Focus States */
+    .form-field-group input:focus, 
+    .form-field-group select:focus, 
+    .form-field-group textarea:focus {
+        color: #0A1628;
+        background-color: #fff;
+        border-color: #0A1628;
+        outline: 0;
+        box-shadow: 0 0 0 3px rgba(10, 22, 40, 0.04);
+    }
+
+    /* Error Validation Injections */
+    .form-field-group .text-danger + .input-wrapper input,
+    .form-field-group .text-danger + .input-wrapper select,
+    .form-field-group .text-danger + .input-wrapper textarea {
+        border-color: #dc3545 !important;
+        background-color: rgba(220, 53, 69, 0.01);
+    }
+    
+    /* Fade-in Animation entry curve */
+    .animate-fade-in {
+        animation: fadeInFrame 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeInFrame {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

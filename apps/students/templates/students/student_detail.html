@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ student.full_name }} - Profile{% endblock %}
+
+{% block content %}
+
+<div class="toast-container-custom">
+    {% if has_face_encoding %}
+        <div class="premium-toast alert toast-success swipeable-toast d-flex align-items-center" role="alert">
+            <div class="toast-icon">
+                <i class="fas fa-fingerprint fs-5"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">Biometrics Active</div>
+                <div class="toast-message">Face encoding registered successfully.</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="toast-progress"></div>
+        </div>
+    {% else %}
+        <div class="premium-toast alert toast-warning swipeable-toast d-flex align-items-center" role="alert">
+            <div class="toast-icon">
+                <i class="fas fa-exclamation-triangle fs-5"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">Missing Data</div>
+                <div class="toast-message">No biometric profile found.</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="toast-progress"></div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+    <div>
+        <span class="text-uppercase fw-bold d-block mb-1 text-muted" style="font-size: 0.75rem; letter-spacing: 0.1em;">Institutional Registry</span>
+        <h3 class="fw-bold mb-0" style="color: #0A1628;">Student Personal File</h3>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'student_list' %}" class="btn btn-outline-secondary px-3">
+            <i class="fas fa-arrow-left me-1"></i> Back to List
+        </a>
+        <a href="{% url 'student_edit' student.pk %}" class="btn btn-gold px-3 shadow-sm">
+            <i class="fas fa-edit me-1"></i> Edit Profile
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4 col-md-5">
+        <div class="card border-0 shadow-sm p-2 mb-3" style="border-radius: 15px; background: linear-gradient(135deg, #fff 0%, #fbfbfc 100%); border: 1px solid #edf2f9 !important;">
+            <div class="card-body text-center p-4">
+                <div class="position-relative d-inline-block mb-4">
+                    {% if student.photo %}
+                        <img src="{{ student.photo.url }}" class="rounded-circle mx-auto" 
+                             style="width: 130px; height: 130px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    {% else %}
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" 
+                             style="width: 130px; height: 130px; font-size: 3.5rem; color: #C9A84C; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                    {% endif %}
+                    <span class="position-absolute bottom-0 end-0 badge rounded-circle p-2 {% if student.status == 'Active' %}bg-success{% else %}bg-danger{% endif %} border border-white border-3" title="Status: {{ student.status }}">
+                        <span class="visually-hidden">Status</span>
+                    </span>
+                </div>
+
+                <h5 class="fw-bold mb-1" style="color: #0A1628; letter-spacing: -0.02em;">{{ student.full_name }}</h5>
+                <p class="font-monospace text-muted mb-3" style="font-size: 0.9rem;">Reg: {{ student.registration_no }}</p>
+                
+                <div class="text-start space-y-3 pt-3 border-top border-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">Grade / Section</small>
+                        <span class="fw-semibold text-dark">Grade {{ student.student_class.grade.grade_name }}-{{ student.student_class.section.section_name }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">Class Roll No</small>
+                        <span class="badge bg-light text-dark font-monospace px-2.5 py-1.5" style="font-size: 0.8rem;">{{ student.roll_no|default:"Not Set" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">Gender Identifier</small>
+                        <span class="fw-semibold text-dark">
+                            {% if student.gender == 'Male' %}<i class="fas fa-mars me-1 text-primary"></i>
+                            {% elif student.gender == 'Female' %}<i class="fas fa-venus me-1 text-danger"></i>
+                            {% endif %}
+                            {{ student.gender }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">Date of Birth</small>
+                        <span class="fw-semibold text-dark">{{ student.date_of_birth|date:"M d, Y"|default:"Not set" }}</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-3 border-top border-light text-center">
+                    <small class="text-muted d-block mb-2" style="font-size: 0.75rem;">Administrative Actions</small>
+                    <a href="{% url 'student_delete' student.pk %}" class="btn btn-link btn-sm text-danger text-decoration-none">
+                        <i class="fas fa-trash me-1"></i> Permanently Delete Record
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8 col-md-7">
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3 px-4">
+                <h6 class="fw-bold mb-0" style="color: #0A1628;">
+                    <i class="fas fa-id-card-alt me-2" style="color: #C9A84C;"></i> Guardian & Emergency Contacts
+                </h6>
+                <a href="{% url 'add_guardian' student.pk %}" class="btn btn-outline-gold btn-sm px-3">
+                    <i class="fas fa-plus me-1"></i> Add Contact
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% for guardian in guardians %}
+                <div class="d-flex justify-content-between align-items-center p-4 {% if not forloop.last %}border-bottom border-light{% endif %}">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; color: #6c757d; border: 1px solid #edf2f9;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <h6 class="fw-bold mb-0 text-dark">{{ guardian.guardian_name }}</h6>
+                                <span class="badge bg-white text-secondary border ms-2" style="font-size: 0.7rem;">{{ guardian.relationship }}</span>
+                                {% if guardian.is_primary %}
+                                    <span class="badge rounded-pill bg-gold text-dark ms-1" style="font-size: 0.65rem;">
+                                        <i class="fas fa-star me-1"></i>Primary
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="text-muted small">
+                                {% if guardian.email %}
+                                    <span class="me-3"><i class="fas fa-envelope me-1 text-gold opacity-75"></i> {{ guardian.email }}</span>
+                                {% endif %}
+                                {% if guardian.phone %}
+                                    <span><i class="fas fa-phone me-1 text-gold opacity-75"></i> {{ guardian.phone }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'edit_guardian' guardian.pk %}" class="btn btn-sm btn-action btn-outline-primary" title="Edit Contact">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'delete_guardian' guardian.pk %}" class="btn btn-sm btn-action btn-outline-danger" title="Delete Contact"
+                           onclick="return confirm('Delete this guardian contact?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 px-4 text-muted border-top border-light bg-light-subtle rounded-bottom-3">
+                    <i class="fas fa-users fs-1 mb-3 d-block opacity-25"></i>
+                    <h6 class="fw-bold text-dark mb-1">No Guardians Registered</h6>
+                    <p class="small mb-3 mx-auto" style="max-width: 400px;">Please register at least one primary contact for emergency notifications and automated attendance alerts sent to parents/guardians.</p>
+                    <a href="{% url 'add_guardian' student.pk %}" class="btn btn-gold btn-sm px-4">
+                        <i class="fas fa-plus me-1"></i> Register First Guardian
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card-header bg-white border-0 py-3 px-4">
+                <h6 class="fw-bold mb-0">
+                    <i class="fas fa-history me-2" style="color: #C9A84C;"></i> Recent Attendance Ledger
+                </h6>
+            </div>
+            <div class="card-body text-center py-5 px-4 text-muted border-top border-light bg-light-subtle rounded-bottom-3">
+                <i class="fas fa-calendar-alt fs-1 mb-3 d-block opacity-25"></i>
+                <h6 class="fw-bold text-dark mb-1">No Recent Activity</h6>
+                <p class="small mb-0 mx-auto" style="max-width: 400px;">Once face recognition or manual attendance is processed for this student, the most recent logs will appear here detailing date, status, and verification method.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    /* PREMIUM TOASTER CSS */
+    .toast-container-custom {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 1055;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+    }
+
+    /* Base Toast Styling */
+    .premium-toast {
+        pointer-events: auto;
+        min-width: 320px;
+        background: var(--navy); /* Deep project navy */
+        border: 1px solid rgba(201, 168, 76, 0.2); /* Subtle gold border */
+        border-radius: 12px;
+        box-shadow: 0 12px 35px rgba(10, 22, 40, 0.25);
+        padding: 16px 20px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 0 !important; /* Override bootstrap alert margin */
+        
+        /* Swipe behavior */
+        cursor: grab;
+        user-select: none;
+        touch-action: pan-y;
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease;
+    }
+
+    .premium-toast:active {
+        cursor: grabbing;
+    }
+
+    /* Layout within toast */
+    .premium-toast .toast-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        flex-shrink: 0;
+    }
+
+    .premium-toast .toast-content {
+        flex-grow: 1;
+        padding-right: 12px;
+    }
+
+    .premium-toast .toast-title {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 2px;
+        letter-spacing: 0.02em;
+    }
+
+    .premium-toast .toast-message {
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    /* Close Button (Inverted for dark background) */
+    .premium-toast .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+        opacity: 0.5;
+        background-size: 0.8em;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+    }
+    
+    .premium-toast .btn-close:hover {
+        opacity: 1;
+    }
+
+    /* Specific Theme Modifiers */
+    .toast-success .toast-icon {
+        background: rgba(32, 201, 151, 0.15);
+        color: #20c997; 
+        box-shadow: inset 0 0 0 1px rgba(32, 201, 151, 0.2);
+    }
+    
+    .toast-warning .toast-icon {
+        background: rgba(201, 168, 76, 0.15); /* Project Gold */
+        color: var(--gold);
+        box-shadow: inset 0 0 0 1px rgba(201, 168, 76, 0.2);
+    }
+
+    /* Animated Progress Bar */
+    .toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        width: 100%;
+        animation: progress-shrink 5s linear forwards;
+    }
+
+    .toast-success .toast-progress {
+        background: #20c997;
+    }
+
+    .toast-warning .toast-progress {
+        background: var(--gold);
+    }
+
+    @keyframes progress-shrink {
+        0% { width: 100%; }
+        100% { width: 0%; }
+    }
+
+    /* Premium utilities from previous code */
+    .space-y-3 > * + * { margin-top: 1rem !important; }
+    .btn-action { width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; }
+    .border-light { border-color: #edf2f9 !important; }
+    .bg-light-subtle { background-color: #fbfbfc !important; }
+    .btn-outline-gold { color: #C9A84C; border-color: #C9A84C; }
+    .btn-outline-gold:hover { background-color: #C9A84C; color: #fff; }
+    .badge.bg-gold { background-color: #C9A84C; color: #fff; }
+</style>
+{% endblock %}
+
+{% endblock %}

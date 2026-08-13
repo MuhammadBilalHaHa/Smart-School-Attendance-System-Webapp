@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Purge Record: {{ student.full_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-xl-5 col-lg-6 col-md-8">
+        <!-- Deletion Panel -->
+        <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px; border: 1px solid #edf2f9 !important;">
+            <!-- Destructive Action Accent Bar -->
+            <div class="p-1" style="background-color: #DC3545;"></div>
+            
+            <div class="card-body p-4 p-md-5 text-center">
+                <!-- Warning Icon Stacking -->
+                <span class="fa-stack fa-2x mb-3 text-danger opacity-90">
+                    <i class="fas fa-circle fa-stack-2x opacity-10"></i>
+                    <i class="fas fa-exclamation-triangle fa-stack-1x"></i>
+                </span>
+
+                <span class="text-uppercase fw-bold d-block mb-1 text-danger tracking-wider font-monospace" style="font-size: 0.75rem; letter-spacing: 0.05em;">
+                    Critical Registry Action
+                </span>
+                <h4 class="fw-bold mb-3" style="color: #0A1628; letter-spacing: -0.02em;">Delete Student File?</h4>
+                
+                <p class="text-muted small mb-4">
+                    You are preparing to permanently remove this student record from the core application database. This action is irreversible.
+                </p>
+
+                <!-- Target Entity Visual Reference Card -->
+                <div class="p-3 mb-4 rounded-3 text-start d-flex align-items-center bg-light border border-light">
+                    {% if student.photo %}
+                        <img src="{{ student.photo.url }}" class="rounded-circle me-3 object-fit-cover border" 
+                             style="width: 52px; height: 52px; border-color: #E2E8F0 !important;">
+                    {% else %}
+                        <div class="rounded-circle bg-white border d-flex align-items-center justify-content-center me-3 text-muted" 
+                             style="width: 52px; height: 52px; font-size: 1.25rem;">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                    {% endif %}
+                    <div style="min-width: 0;">
+                        <h6 class="fw-bold text-dark mb-0 text-truncate">{{ student.full_name }}</h6>
+                        <span class="text-muted small font-monospace d-block text-truncate" style="font-size: 0.8rem;">
+                            ID: {{ student.registration_no }}
+                        </span>
+                        <span class="badge bg-white text-secondary border mt-1" style="font-size: 0.65rem;">
+                            Grade {{ student.student_class.grade.grade_name }}-{{ student.student_class.section.section_name }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Downstream Consequences Microcopy -->
+                <div class="text-start rounded-3 p-3 mb-4" style="background-color: rgba(220, 53, 69, 0.03); border: 1px dashed rgba(220, 53, 69, 0.25);">
+                    <h6 class="fw-bold text-danger text-uppercase mb-2 tracking-wider" style="font-size: 0.7rem;">
+                        <i class="fas fa-info-circle me-1"></i> System Cascades:
+                    </h6>
+                    <ul class="list-unstyled small text-muted mb-0 space-y-1.5" style="font-size: 0.8rem;">
+                        <li class="d-flex align-items-start">
+                            <i class="fas fa-times text-danger me-2 mt-1" style="font-size: 0.65rem;"></i>
+                            <span>Biometric facial recognition templates will be completely purged.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fas fa-times text-danger me-2 mt-1" style="font-size: 0.65rem;"></i>
+                            <span>All linked guardian relationships and contact paths will default-unlink.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fas fa-times text-danger me-2 mt-1" style="font-size: 0.65rem;"></i>
+                            <span>Historical attendance logs will be permanently archived or dropped.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Triggers -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger py-2.5 fw-bold text-uppercase shadow-sm mb-1" style="letter-spacing: 0.05em; font-size: 0.85rem;">
+                            <i class="fas fa-trash-alt me-2"></i> Authorize Permanent Purge
+                        </button>
+                        <a href="{% url 'student_list' %}" class="btn btn-outline-secondary py-2.5 fw-semibold" style="font-size: 0.85rem;">
+                            Cancel & Abort Action
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .space-y-1.5 > * + * {
+        margin-top: 0.4rem !important;
+    }
+    .border-light {
+        border-color: #edf2f9 !important;
+    }
+    .tracking-wider {
+        letter-spacing: 0.08em;
+    }
+</style>
+{% endblock %}```

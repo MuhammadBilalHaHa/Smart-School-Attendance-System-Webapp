@@ -1,0 +1,518 @@
+SMART SCHOOL ATTENDANCE SYSTEM
+📌 Project Description (Final Year Project)
+
+The Smart School Attendance System is an AI-based automated attendance management solution designed for schools to replace traditional manual attendance methods. The system uses face recognition technology to automatically identify students and mark their attendance in real time, reducing human error, saving time, and improving accuracy.
+
+This system is developed as a role-based application where only two types of users exist: Principal and Teachers. The Principal acts as the system administrator with full control over users, classes, academic structure, and reports, while Teachers manage daily classroom attendance for their assigned classes.
+
+🎯 Project Objective
+
+The main objective of this project is to develop an intelligent and automated attendance system that:
+
+Eliminates manual attendance marking
+Uses facial recognition for student identification
+Provides real-time attendance tracking
+Sends automated notifications to parents
+Maintains complete audit logs for transparency
+Ensures secure role-based access control
+🧠 Core Concept
+
+The system is based on computer vision and database management integration. Each student’s facial data is stored during registration. During class, a live camera captures student faces, converts them into encodings, and matches them with stored data to mark attendance automatically.
+
+👥 User Roles
+1. Principal (Admin)
+
+The Principal has full control over the system and can:
+
+Create and manage teacher accounts
+Assign teachers to classes
+Manage students, classes, and subjects
+Control attendance settings (manual/automatic)
+View reports and audit logs
+Promote students to next classes
+2. Teacher
+
+Teachers are responsible for daily classroom operations:
+
+Start and manage attendance sessions
+View assigned classes and students
+Monitor and edit attendance records (if needed)
+Review attendance reports of their classes
+🏫 System Features
+📌 Student Management
+Student registration with unique registration number
+Class and section assignment
+Guardian/contact information
+Student status tracking
+📌 Face Recognition System
+Student face image capture during registration
+Generation of face encodings
+Real-time face detection during attendance
+Matching live faces with stored encodings
+📌 Attendance Management
+One attendance session per class per day
+Manual or automatic attendance start
+Real-time marking (Present / Late / Absent)
+Duplicate prevention system
+Attendance correction by teacher or principal
+📌 Academic Structure
+Grade-wise class system (1–10)
+Section management (A, B, C)
+Subject assignment per grade
+Teacher-subject-class mapping
+📌 Promotion System
+End-of-year student promotion
+Bulk promotion handling
+Promotion history tracking
+📌 Notification System
+Automatic email notifications to parents
+Alerts for absent or late students
+Email status logging
+📌 Audit System
+Logs every system activity
+Tracks changes in attendance records
+Records user actions for transparency
+🧩 System Architecture Overview
+
+The system is divided into four main layers:
+
+Authentication Layer (Login & Role Management)
+Academic Management Layer (Students, Classes, Subjects)
+AI Face Recognition Layer (Detection & Encoding)
+Attendance & Reporting Layer (Sessions, Logs, Notifications)
+🗄️ Database Technology
+MySQL is used as the relational database system
+Structured schema ensures data consistency
+Foreign key relationships maintain integrity
+Optimized for scalability and future expansion
+🤖 Technology Concept (Optional for Report)
+Face Recognition using OpenCV / Deep Learning models
+Face Encoding for identity matching
+Real-time camera processing
+Backend integration with database system
+📊 Key Benefits
+Automated attendance reduces teacher workload
+High accuracy using biometric identification
+Transparent system with audit logs
+Parental awareness through notifications
+Scalable for schools, colleges, and institutions
+🏁 Conclusion
+
+The Smart School Attendance System is a modern AI-based solution that replaces traditional attendance methods with an automated, secure, and intelligent system. It integrates face recognition technology with a structured academic database to ensure accuracy, efficiency, and transparency in school attendance management.
+
+
+
+
+
+/* =========================================================
+   SMART SCHOOL ATTENDANCE SYSTEM (FYP PROJECT)
+   Final Clean Version - MySQL
+   ========================================================= */
+
+CREATE DATABASE IF NOT EXISTS smart_school_attendance;
+USE smart_school_attendance;
+
+-- =========================================================
+-- TABLE: roles
+-- =========================================================
+CREATE TABLE roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+INSERT INTO roles (role_name) VALUES ('Principal'), ('Teacher');
+
+-- =========================================================
+-- TABLE: users
+-- =========================================================
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_id INT NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    status ENUM('Active','Inactive') DEFAULT 'Active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+-- =========================================================
+-- TABLE: teachers
+-- =========================================================
+CREATE TABLE teachers (
+    teacher_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    status ENUM('Active','Inactive') DEFAULT 'Active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- =========================================================
+-- TABLE: grades
+-- =========================================================
+CREATE TABLE grades (
+    grade_id INT AUTO_INCREMENT PRIMARY KEY,
+    grade_name VARCHAR(20) NOT NULL UNIQUE
+);
+
+INSERT INTO grades (grade_name)
+VALUES ('1'),('2'),('3'),('4'),('5'),
+       ('6'),('7'),('8'),('9'),('10');
+
+-- =========================================================
+-- TABLE: sections
+-- =========================================================
+CREATE TABLE sections (
+    section_id INT AUTO_INCREMENT PRIMARY KEY,
+    section_name VARCHAR(10) NOT NULL UNIQUE
+);
+
+INSERT INTO sections (section_name)
+VALUES ('A'),('B'),('C');
+
+-- =========================================================
+-- TABLE: classes
+-- =========================================================
+CREATE TABLE classes (
+    class_id INT AUTO_INCREMENT PRIMARY KEY,
+    grade_id INT NOT NULL,
+    section_id INT NULL,
+    class_teacher_id INT NULL,
+
+    attendance_mode ENUM('Manual','Automatic') DEFAULT 'Manual',
+    auto_attendance_time TIME NULL,
+
+    status ENUM('Active','Inactive') DEFAULT 'Active',
+
+    FOREIGN KEY (grade_id) REFERENCES grades(grade_id),
+    FOREIGN KEY (section_id) REFERENCES sections(section_id),
+    FOREIGN KEY (class_teacher_id) REFERENCES teachers(teacher_id),
+
+    UNIQUE (grade_id, section_id)
+);
+
+-- =========================================================
+-- TABLE: students
+-- =========================================================
+CREATE TABLE students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    registration_no VARCHAR(50) NOT NULL UNIQUE,
+    roll_no VARCHAR(20),
+
+    full_name VARCHAR(100) NOT NULL,
+    gender ENUM('Male','Female') NOT NULL,
+    date_of_birth DATE,
+
+    class_id INT NOT NULL,
+
+    status ENUM('Active','Inactive','Transferred','Left') DEFAULT 'Active',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (class_id) REFERENCES classes(class_id)
+);
+
+-- =========================================================
+-- TABLE: guardians
+-- =========================================================
+CREATE TABLE guardians (
+    guardian_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+
+    guardian_name VARCHAR(100) NOT NULL,
+    relationship VARCHAR(50),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+
+    is_primary BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+
+-- =========================================================
+-- TABLE: subjects
+-- =========================================================
+CREATE TABLE subjects (
+    subject_id INT AUTO_INCREMENT PRIMARY KEY,
+    subject_name VARCHAR(100) NOT NULL,
+    grade_id INT NOT NULL,
+
+    FOREIGN KEY (grade_id) REFERENCES grades(grade_id)
+);
+
+-- =========================================================
+-- TABLE: teacher_subjects
+-- =========================================================
+CREATE TABLE teacher_subjects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    class_id INT NOT NULL,
+
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id),
+    FOREIGN KEY (class_id) REFERENCES classes(class_id),
+
+    UNIQUE (teacher_id, subject_id, class_id)
+);
+
+-- =========================================================
+-- TABLE: teacher_classes
+-- =========================================================
+CREATE TABLE teacher_classes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT NOT NULL,
+    class_id INT NOT NULL,
+
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+    FOREIGN KEY (class_id) REFERENCES classes(class_id),
+
+    UNIQUE (teacher_id, class_id)
+);
+
+-- =========================================================
+-- TABLE: student_photos
+-- =========================================================
+CREATE TABLE student_photos (
+    photo_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    photo_path VARCHAR(255) NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+
+-- =========================================================
+-- TABLE: student_face_encodings
+-- =========================================================
+CREATE TABLE student_face_encodings (
+    encoding_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    encoding_data LONGTEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+
+-- =========================================================
+-- TABLE: attendance_sessions
+-- =========================================================
+CREATE TABLE attendance_sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_id INT NOT NULL,
+    teacher_id INT NOT NULL,
+
+    attendance_date DATE NOT NULL,
+    started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    attendance_mode ENUM('Manual','Automatic') DEFAULT 'Manual',
+
+    FOREIGN KEY (class_id) REFERENCES classes(class_id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+
+    UNIQUE (class_id, attendance_date)
+);
+
+-- =========================================================
+-- TABLE: attendance_records
+-- FIX: Prevent duplicate attendance per session/student
+-- =========================================================
+CREATE TABLE attendance_records (
+    attendance_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    student_id INT NOT NULL,
+
+    status ENUM('Present','Absent','Late','Leave') NOT NULL,
+    marked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (session_id) REFERENCES attendance_sessions(session_id),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+
+    UNIQUE (session_id, student_id)
+);
+
+-- =========================================================
+-- TABLE: promotion_history
+-- =========================================================
+CREATE TABLE promotion_history (
+    promotion_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+
+    from_class_id INT NOT NULL,
+    to_class_id INT NOT NULL,
+
+    promotion_date DATE NOT NULL,
+    promoted_by INT,
+
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (from_class_id) REFERENCES classes(class_id),
+    FOREIGN KEY (to_class_id) REFERENCES classes(class_id),
+    FOREIGN KEY (promoted_by) REFERENCES users(user_id)
+);
+
+-- =========================================================
+-- TABLE: email_logs
+-- =========================================================
+CREATE TABLE email_logs (
+    email_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+
+    recipient_email VARCHAR(100) NOT NULL,
+    email_type VARCHAR(50),
+
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50),
+
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+
+-- =========================================================
+-- TABLE: audit_logs
+-- =========================================================
+CREATE TABLE audit_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+
+    action VARCHAR(255) NOT NULL,
+    entity_name VARCHAR(100),
+    entity_id INT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+🏫 SMART SCHOOL ATTENDANCE SYSTEM — FULL WORKFLOW (COMPLETE VIEW)
+🔐 1. LOGIN WORKFLOW
+User Login
+   ↓
+Validate Credentials
+   ↓
+Check Role (Principal / Teacher)
+   ↓
+Redirect to Dashboard
+🧑‍🎓 2. STUDENT REGISTRATION WORKFLOW
+Open Registration Form
+   ↓
+Enter Student Details
+   ↓
+Generate Registration Number
+   ↓
+Assign Class (Grade + Section)
+   ↓
+Capture Student Images (2–5)
+   ↓
+Save Images in Folder (REG_NO based)
+   ↓
+Generate Face Encodings
+   ↓
+Store in Database
+👨‍🏫 3. TEACHER & CLASS ASSIGNMENT WORKFLOW
+Principal Login
+   ↓
+Create Teacher Account
+   ↓
+Assign Class (Grade + Section)
+   ↓
+Set Class Incharge Teacher
+   ↓
+(Optional) Assign Subjects
+📚 4. SUBJECT & ACADEMIC SETUP WORKFLOW
+Create Subjects
+   ↓
+Assign Subjects to Grades
+   ↓
+Assign Teacher → Subject → Class
+📷 5. FACE ENROLLMENT WORKFLOW
+Capture Student Images
+   ↓
+Save Images in Folder
+   ↓
+Generate Face Encodings (One-time)
+   ↓
+Validate Face Data
+   ↓
+Store Encodings in Database
+📅 6. DAILY ATTENDANCE WORKFLOW (CORE)
+Teacher Start OR Auto Trigger
+   ↓
+Create Attendance Session
+   ↓
+Start Camera
+   ↓
+Detect Face
+   ↓
+Generate Live Encoding
+   ↓
+Match with Stored Encodings
+   ↓
+Mark Present / Late
+   ↓
+Unmatched Students → Absent
+   ↓
+Teacher Review (Optional)
+   ↓
+Finalize Session
+✏️ 7. ATTENDANCE CORRECTION WORKFLOW
+Open Attendance Session
+   ↓
+Select Student Record
+   ↓
+Edit Status (Present/Absent/Late/Leave)
+   ↓
+Save Changes
+   ↓
+Update Database
+   ↓
+Log in Audit System
+🎓 8. STUDENT PROMOTION WORKFLOW
+End of Academic Year
+   ↓
+Principal Opens Promotion Panel
+   ↓
+Select Class
+   ↓
+Mark Students (Promote / Repeat)
+   ↓
+Update Class ID
+   ↓
+Save Promotion History
+👁️ 9. FACE RECOGNITION ATTENDANCE WORKFLOW
+Camera Starts
+   ↓
+Detect Face in Frame
+   ↓
+Generate Live Encoding
+   ↓
+Compare with Stored Encodings
+   ↓
+Match Found?
+   ↓
+Yes → Mark Attendance
+No → Ignore
+   ↓
+Prevent Duplicate Entry
+👨‍💼 10. USER MANAGEMENT WORKFLOW
+Principal Opens System Panel
+   ↓
+Create Teacher Account
+   ↓
+Assign Role
+   ↓
+Activate / Deactivate User
+   ↓
+Save in Users Table
+📧 11. NOTIFICATION + AUDIT WORKFLOW
+Attendance Completed
+   ↓
+Generate Summary
+   ↓
+Send Email to Parents (Absent/Late)
+   ↓
+Log Email Status
+   ↓
+Record All Actions in Audit Logs

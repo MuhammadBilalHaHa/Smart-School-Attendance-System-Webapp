@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block title %}Teachers Management{% endblock %}
+
+{% block content %}
+<!-- Contextual Institutional Header -->
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center border-bottom pb-3 mb-4 gap-3">
+    <div>
+        <span class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em; color: #C9A84C;">
+            Academic Directory
+        </span>
+        <h4 class="fw-bold mb-1" style="color: #0A1628; letter-spacing: -0.02em;">Teachers Management</h4>
+        <p class="text-muted small mb-0">Review, modify, and authorize standard staff profiles across the faculty ledger.</p>
+    </div>
+    <a href="{% url 'teacher_add' %}" class="btn btn-gold px-4 py-2 fw-bold text-uppercase shadow-sm shrink-on-click" style="letter-spacing: 0.05em; font-size: 0.8rem;">
+        <i class="fas fa-plus me-2"></i> Add Faculty Profile
+    </a>
+</div>
+
+<!-- Core Ledger Data Card -->
+<div class="card border-0 shadow-sm overflow-hidden mb-4" style="border-radius: 12px; border: 1px solid #edf2f9 !important;">
+    <div class="p-1" style="background-color: #0A1628;"></div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-faded-light border-bottom">
+                    <tr class="text-uppercase tracking-wider font-monospace text-secondary" style="font-size: 0.7rem; background-color: #fbfbfc;">
+                        <th class="ps-4 py-3" style="width: 60px;">Index</th>
+                        <th class="py-3">Faculty Name</th>
+                        <th class="py-3">Routing Address (Email)</th>
+                        <th class="py-3">Primary Contact</th>
+                        <th class="py-3">Qualification</th>
+                        <th class="py-3 text-center" style="width: 140px;">Registry Status</th>
+                        <th class="pe-4 py-3 text-end" style="width: 120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                    <tr class="premium-row">
+                        <td class="ps-4 font-monospace text-muted small">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center bg-light text-secondary me-2.5 font-monospace fw-bold" 
+                                     style="width: 34px; height: 34px; font-size: 0.8rem; border: 1px solid #E2E8F0;">
+                                    {{ teacher.full_name|slice:":2"|upper }}
+                                </div>
+                                <span class="fw-bold text-dark" style="font-size: 0.9rem;">{{ teacher.full_name }}</span>
+                            </div>
+                        </td>
+                        <td class="text-muted small">{{ teacher.email|default:"-" }}</td>
+                        <td class="text-secondary small font-monospace">{{ teacher.phone|default:"-" }}</td>
+                        <td>
+                            <span class="text-dark small fw-medium">{{ teacher.qualification|default:"-" }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if teacher.status == 'Active' %}
+                                <span class="badge badge-pill-success">
+                                    <span class="dot-indicator bg-success"></span> Active
+                                </span>
+                            {% else %}
+                                <span class="badge badge-pill-danger">
+                                    <span class="dot-indicator bg-danger"></span> Inactive
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 text-end">
+                            <div class="d-inline-flex gap-1">
+                                <a href="{% url 'teacher_edit' teacher.pk %}" class="btn btn-action btn-edit" title="Edit Profile">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'teacher_delete' teacher.pk %}" class="btn btn-action btn-delete" title="Purge Record">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 bg-white">
+                            <div class="py-4">
+                                <span class="fa-stack fa-2x mb-3 text-muted opacity-40">
+                                    <i class="fas fa-circle fa-stack-2x light-gray-fallback"></i>
+                                    <i class="fas fa-user-tie fa-stack-1x text-secondary"></i>
+                                </span>
+                                <h6 class="fw-bold text-dark mb-1">No Faculty Profiles Registered</h6>
+                                <p class="text-muted small mx-auto mb-4" style="max-width: 320px;">
+                                    The active database has no structural records mapped to this ledger view. Add a profile to get started.
+                                </p>
+                                <a href="{% url 'teacher_add' %}" class="btn btn-gold btn-sm px-4 py-2 fw-semibold">
+                                    <i class="fas fa-plus me-1"></i> Add First Teacher
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== CREDENTIALS MODAL ==================== -->
+{% if show_modal and credentials %}
+<div class="modal fade" id="credentialsModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 16px;">
+            <div class="p-1" style="background-color: #198754;"></div>
+            
+            <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex align-items-start">
+                <div class="d-flex align-items-center">
+                    <span class="fa-stack me-3 text-success opacity-90">
+                        <i class="fas fa-circle fa-stack-2x text-success opacity-10"></i>
+                        <i class="fas fa-check-circle fa-stack-1x"></i>
+                    </span>
+                    <div>
+                        <h5 class="modal-title fw-bold" style="color: #0A1628; letter-spacing: -0.01em;">Faculty File Established</h5>
+                        <p class="text-muted small mb-0">System access privileges initialized successfully.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body px-4 pb-4 pt-3">
+                <p class="text-muted small mb-3">
+                    Transmit these newly minted secure authentication tokens directly to <strong>{{ credentials.name }}</strong>.
+                </p>
+                
+                <div class="p-3 mb-3 rounded-3" style="background-color: #f8fafc; border: 1px solid #edf2f9;">
+                    <div class="d-flex justify-content-between align-items-center bg-white rounded-3 p-3 mb-2 border border-light">
+                        <span class="text-muted small fw-semibold">Access Username</span>
+                        <code id="credUsername" class="text-dark fw-bold fs-6 tracking-wide bg-transparent p-0 border-0">{{ credentials.username }}</code>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center bg-white rounded-3 p-3 border border-light">
+                        <span class="text-muted small fw-semibold">Security Passkey</span>
+                        <code id="credPassword" class="text-dark fw-bold fs-6 tracking-wide bg-transparent p-0 border-0">{{ credentials.password }}</code>
+                    </div>
+                </div>
+
+                <div id="copySuccess" class="alert alert-success border-0 py-2.5 mb-3 d-none align-items-center justify-content-center small" style="border-radius: 8px; font-weight: 500;">
+                    <i class="fas fa-check-circle me-2"></i> Credentials copied to device clipboard.
+                </div>
+
+                <div class="text-start rounded-3 p-3 mb-4" style="background-color: rgba(220, 53, 69, 0.03); border: 1px dashed rgba(220, 53, 69, 0.2);">
+                    <p class="text-danger small fw-semibold mb-0 d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2 fs-6"></i>
+                        Security Advisory: Record these tokens immediately. They are cryptographically salted and cannot be re-rendered post-dismissal.
+                    </p>
+                </div>
+                
+                <div class="d-grid">
+                    <button id="copyBtn" class="btn btn-gold py-2.5 fw-bold text-uppercase shadow-sm shrink-on-click" onclick="copyCredentials()" style="letter-spacing: 0.05em; font-size: 0.85rem;">
+                        <i class="fas fa-copy me-2"></i> 
+                        <span id="btnCopyText">Copy Authorization Set</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalEl = document.getElementById('credentialsModal');
+        if (modalEl) {
+            var modal = new bootstrap.Modal(modalEl);
+            modal.show();
+            
+            modalEl.addEventListener('hidden.bs.modal', function() {
+                window.location.href = "{% url 'teacher_list' %}?clear=1";
+            });
+        }
+    });
+
+    function copyCredentials() {
+        const username = document.getElementById('credUsername').innerText;
+        const password = document.getElementById('credPassword').innerText;
+        const copyBtn = document.getElementById('copyBtn');
+        const btnText = document.getElementById('btnCopyText');
+        const successMsg = document.getElementById('copySuccess');
+
+        navigator.clipboard.writeText(`Username: ${username}\nPassword: ${password}`).then(function() {
+            
+            copyBtn.disabled = true;
+            btnText.innerHTML = `Tokens Secured!`;
+            copyBtn.classList.add('btn-success');
+            copyBtn.classList.remove('btn-gold');
+
+            successMsg.classList.remove('d-none');
+            successMsg.classList.add('d-flex');
+            
+            setTimeout(() => {
+                copyBtn.disabled = false;
+                btnText.innerHTML = `Copy Authorization Set`;
+                copyBtn.classList.remove('btn-success');
+                copyBtn.classList.add('btn-gold');
+                successMsg.classList.add('d-none');
+                successMsg.classList.remove('d-flex');
+            }, 3000);
+        }).catch(function() {
+            alert("Security policy blocked automated copy. Please capture manually.");
+        });
+    }
+</script>
+{% endif %}
+<!-- ==================== END MODAL ==================== -->
+
+<style>
+    /* Premium Table Interactivity Design Styles */
+    .premium-row {
+        transition: background-color 0.15s ease-in-out;
+    }
+    .premium-row:hover {
+        background-color: #fbfbfc !important;
+    }
+    
+    /* Action Triggers UI Matrix */
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        background: transparent;
+        transition: all 0.15s ease-in-out;
+    }
+    .btn-edit {
+        color: #4a5568;
+        border: 1px solid #E2E8F0;
+    }
+    .btn-edit:hover {
+        color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.05);
+        border-color: rgba(13, 110, 253, 0.2);
+    }
+    .btn-delete {
+        color: #e53e3e;
+        border: 1px solid #fed7d7;
+    }
+    .btn-delete:hover {
+        color: #fff;
+        background-color: #e53e3e;
+        border-color: #e53e3e;
+    }
+    
+    /* Elegant Pill Badges */
+    .badge-pill-success {
+        background-color: rgba(25, 135, 84, 0.06);
+        color: #198754;
+        border: 1px solid rgba(25, 135, 84, 0.15);
+        padding: 0.35rem 0.65rem;
+        border-radius: 50rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+    }
+    .badge-pill-danger {
+        background-color: rgba(220, 53, 69, 0.06);
+        color: #dc3545;
+        border: 1px solid rgba(220, 53, 69, 0.15);
+        padding: 0.35rem 0.65rem;
+        border-radius: 50rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+    }
+    .dot-indicator {
+        width: 6px;
+        height: 6px;
+        border-radius: 50rem;
+        margin-right: 0.4rem;
+        display: inline-block;
+    }
+
+    /* Utility Helpers */
+    .border-light {
+        border-color: #edf2f9 !important;
+    }
+    .light-gray-fallback {
+        color: #f1f5f9 !important;
+    }
+    .me-2.5 {
+        margin-right: 0.6rem !important;
+    }
+    .tracking-wider {
+        letter-spacing: 0.06em;
+    }
+    .shrink-on-click:active {
+        transform: scale(0.98);
+    }
+    .opacity-10 {
+        opacity: 0.1 !important;
+    }
+</style>
+{% endblock %}

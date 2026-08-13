@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if guardian %}Edit{% else %}Add{% endif %} Guardian - {{ student.full_name }}{% endblock %}
+
+{% block content %}
+<!-- Contextual Institutional Header -->
+<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4 gap-3">
+    <div>
+        <span class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em; color: #C9A84C;">
+            Relationship & Contact Linkage
+        </span>
+        <h4 class="fw-bold mb-1" style="color: #0A1628; letter-spacing: -0.02em;">
+            <i class="fas fa-user-shield me-2" style="color: #C9A84C;"></i>
+            {% if guardian %}Modify Contact File{% else %}Establish Guardian Relationship{% endif %}
+        </h4>
+        <p class="text-muted small mb-0">
+            Link authorized emergency contacts, legal guardians, or parental communication endpoints to this student profile.
+        </p>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <!-- Form Segment -->
+    <div class="col-xl-7 col-lg-8">
+        <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+            <div class="p-1" style="background-color: #0A1628;"></div>
+            <div class="card-body p-4 p-md-5">
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        {% for field in form %}
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small text-dark d-flex justify-content-between">
+                                <span>{{ field.label }}</span>
+                                {% if field.field.required %}
+                                    <span class="text-muted font-monospace" style="font-size: 0.65rem;">[Required]</span>
+                                {% endif %}
+                            </label>
+                            
+                            <!-- Contextual wrappers automatically hook into your styles via CSS block -->
+                            <div class="form-field-container">
+                                {{ field }}
+                            </div>
+
+                            {% if field.help_text %}
+                                <div class="form-text text-muted small mt-1" style="font-size: 0.75rem;">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1 font-monospace" style="font-size: 0.75rem;">
+                                    <i class="fas fa-exclamation-circle me-1"></i> {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Actions Panel -->
+                    <div class="mt-5 d-flex justify-content-between gap-3 pt-4 border-top border-light">
+                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-outline-secondary px-4 py-2 fw-semibold">
+                            Cancel & Abort
+                        </a>
+                        <button type="submit" class="btn btn-gold px-5 py-2 fw-bold text-uppercase shadow-sm" style="letter-spacing: 0.05em;">
+                            <i class="fas fa-save me-2"></i> Commit Relationship
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Visual Context Card (Right Sidebar) -->
+    <div class="col-xl-4 col-lg-4">
+        <div class="card border-0 shadow-sm border-light sticky-top" style="border-radius: 12px; top: 20px; background-color: #fbfbfc;">
+            <div class="card-header bg-white border-bottom py-3 px-4">
+                <h6 class="fw-bold mb-0 text-secondary text-uppercase tracking-wider" style="font-size: 0.75rem;">
+                    Target Student Baseline
+                </h6>
+            </div>
+            <div class="card-body p-4 text-center">
+                {% if student.photo %}
+                    <img src="{{ student.photo.url }}" class="rounded-circle mx-auto mb-3 object-fit-cover shadow-sm border" 
+                         style="width: 84px; height: 84px; border-color: #fff !important;">
+                {% else %}
+                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto mb-3 text-muted" 
+                         style="width: 84px; height: 84px; font-size: 2rem;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                {% endif %}
+
+                <h6 class="fw-bold text-dark mb-1">{{ student.full_name }}</h6>
+                <p class="text-muted font-monospace small mb-3" style="font-size: 0.8rem;">ID: {{ student.registration_no }}</p>
+
+                <div class="bg-white rounded-3 p-3 text-start border border-light small">
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                        <span class="text-muted">Allocation:</span>
+                        <span class="fw-semibold text-dark">Grade {{ student.student_class.grade.grade_name }}-{{ student.student_class.section.section_name }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Roll Assignment:</span>
+                        <span class="font-monospace fw-semibold">{{ student.roll_no|default:"-" }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 rounded-3 text-start bg-light-subtle border border-light" style="border-style: dashed !important;">
+                    <h6 class="fw-bold small text-dark mb-1" style="font-size: 0.75rem;">
+                        <i class="fas fa-bullhorn text-gold me-1"></i> Communication Broadcasts
+                    </h6>
+                    <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.4;">
+                        Contacts marked as <strong>Primary</strong> will automatically receive automated real-time SMS tracking updates when the face-recognition engine checks this student in or out.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Framework Inputs Global Mapping injection */
+    .form-field-container input, 
+    .form-field-container select, 
+    .form-field-container textarea {
+        display: block;
+        width: 100%;
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+    
+    /* Input checkbox/radio standardization if form uses BooleanField */
+    .form-field-container input[type="checkbox"] {
+        width: auto;
+        display: inline-block;
+        margin-right: 0.5rem;
+        transform: scale(1.1);
+        cursor: pointer;
+    }
+
+    .form-field-container input:focus, 
+    .form-field-container select:focus, 
+    .form-field-container textarea:focus {
+        border-color: #C9A84C;
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+        outline: 0;
+    }
+
+    .border-light {
+        border-color: #edf2f9 !important;
+    }
+    
+    .bg-light-subtle {
+        background-color: rgba(201,168,76,0.02) !important;
+    }
+    
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+</style>
+{% endblock %}

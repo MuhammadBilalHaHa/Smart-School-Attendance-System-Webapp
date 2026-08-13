@@ -1,0 +1,281 @@
+/* ============================================
+   SMART SCHOOL ATTENDANCE SYSTEM - THEME
+   Colors: Deep Navy (#0A1628) + Gold (#C9A84C)
+   Font: Poppins
+   ============================================ */
+
+/* ---------- GOOGLE FONT ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --navy: #0A1628;
+    --navy-light: #0F1F3A;
+    --gold: #C9A84C;
+    --gold-hover: #B8993F;
+    --gold-light: rgba(201, 168, 76, 0.1);
+    
+    --present: #198754;
+    --absent: #DC3545;
+    --late: #FFC107;
+    --leave: #6C757D;
+}
+
+/* ---------- GLOBAL FONT ---------- */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #F5F6FA;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar {
+    background: var(--navy);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    padding: 12px 20px;
+    transition: all 0.3s;
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--gold);
+    background: var(--navy-light);
+}
+
+.sidebar .nav-link.active {
+    color: var(--gold);
+    background: var(--navy-light);
+    border-left: 3px solid var(--gold);
+    font-weight: 500;
+}
+
+.sidebar .nav-link i {
+    width: 20px;
+    margin-right: 10px;
+}
+
+/* ---------- NAVBAR ---------- */
+.navbar {
+    background: var(--navy) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.btn-gold {
+    background-color: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+    font-weight: 600;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-hover);
+    border-color: var(--gold-hover);
+    color: var(--navy);
+}
+
+.btn-navy {
+    background-color: var(--navy);
+    border-color: var(--navy);
+    color: white;
+    font-weight: 500;
+}
+
+.btn-navy:hover {
+    background-color: var(--navy-light);
+    color: white;
+}
+
+/* ---------- CARDS ---------- */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- TABLES ---------- */
+.table th {
+    background: var(--navy);
+    color: white;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.table td {
+    vertical-align: middle;
+    font-weight: 400;
+}
+
+/* ---------- STATUS BADGES ---------- */
+.badge {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.badge-present {
+    background-color: var(--present);
+}
+
+.badge-absent {
+    background-color: var(--absent);
+}
+
+.badge-late {
+    background-color: var(--late);
+    color: #000;
+}
+
+.badge-leave {
+    background-color: var(--leave);
+}
+
+/* ---------- STATS CARDS ---------- */
+.stats-card {
+    border-left: 4px solid var(--gold);
+}
+
+.stats-card.present {
+    border-left-color: var(--present);
+}
+
+.stats-card.absent {
+    border-left-color: var(--absent);
+}
+
+.stats-card.late {
+    border-left-color: var(--late);
+}
+
+.stats-card .stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.stats-card .stats-label {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* ---------- LOGIN PAGE ---------- */
+.login-page {
+    background: var(--navy);
+    min-height: 100vh;
+}
+
+.login-card .school-icon {
+    background: var(--gold);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--navy);
+    font-size: 1.8rem;
+}
+
+/* ---------- FORM ELEMENTS ---------- */
+.form-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+/* ---------- PAGE HEADER ---------- */
+.page-header {
+    color: var(--navy);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* ---------- ACTIVE LINK ---------- */
+a {
+    color: var(--navy);
+    font-weight: 500;
+}
+
+a:hover {
+    color: var(--gold);
+}
+
+/* ---------- PROGRESS BAR ---------- */
+.progress-bar-present {
+    background-color: var(--present);
+}
+
+.progress-bar-absent {
+    background-color: var(--absent);
+}
+
+/* ---------- CAMERA CONTAINER ---------- */
+.camera-box {
+    border: 3px solid var(--gold);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+
+/* ---------- TEXT STYLES ---------- */
+.text-muted {
+    font-weight: 400;
+}
+
+.small {
+    font-weight: 400;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .sidebar {
+        margin-left: -250px;
+    }
+    .sidebar.show {
+        margin-left: 0;
+    }
+}

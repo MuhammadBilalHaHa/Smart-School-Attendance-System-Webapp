@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart School | {% block title %}{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --navy: #0A1628; --gold: #C9A84C; --navy-light: #0F1F3A; }
+        
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #F5F6FA; margin: 0; padding: 0; }
+        
+        .btn-gold { background: var(--gold); color: var(--navy); font-weight: 600; border: none; }
+        .btn-gold:hover { background: #B8993F; color: var(--navy); }
+        
+        .table th { background: var(--navy); color: white; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        
+        .main-content { margin-left: 260px; margin-top: 56px; padding: 28px 32px; min-height: calc(100vh - 56px); }
+        
+        @media (max-width: 768px) {
+            .main-content { margin-left: 0; }
+        }
+
+        /* --- PREMIUM TOASTER CSS --- */
+        .toast-container-custom {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1055;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .premium-toast {
+            pointer-events: auto;
+            min-width: 450px;
+            background: var(--navy);
+            border-radius: 12px;
+            box-shadow: 0 12px 35px rgba(10, 22, 40, 0.25);
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0 !important;
+            
+            /* Swipe behavior */
+            cursor: grab;
+            user-select: none;
+            touch-action: pan-y;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .premium-toast:active {
+            cursor: grabbing;
+        }
+
+        .premium-toast .toast-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .premium-toast .toast-content {
+            flex-grow: 1;
+            padding-right: 12px;
+        }
+
+        .premium-toast .toast-title {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+            letter-spacing: 0.02em;
+            text-transform: capitalize;
+        }
+
+        .premium-toast .toast-message {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .premium-toast .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+            opacity: 0.5;
+            background-size: 0.8em;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+        }
+        
+        .premium-toast .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* Animated Progress Bar */
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            animation: progress-shrink 5s linear forwards;
+        }
+
+        @keyframes progress-shrink {
+            0% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        /* Dynamic Theme Modifiers (Success, Warning, Error, Info) */
+        .toast-success { border-color: rgba(32, 201, 151, 0.2); }
+        .toast-success .toast-icon { background: rgba(32, 201, 151, 0.15); color: #20c997; box-shadow: inset 0 0 0 1px rgba(32, 201, 151, 0.2); }
+        .toast-success .toast-progress { background: #20c997; }
+
+        .toast-warning { border-color: rgba(201, 168, 76, 0.2); }
+        .toast-warning .toast-icon { background: rgba(201, 168, 76, 0.15); color: var(--gold); box-shadow: inset 0 0 0 1px rgba(201, 168, 76, 0.2); }
+        .toast-warning .toast-progress { background: var(--gold); }
+
+        .toast-error, .toast-danger { border-color: rgba(220, 53, 69, 0.2); }
+        .toast-error .toast-icon, .toast-danger .toast-icon { background: rgba(220, 53, 69, 0.15); color: #dc3545; box-shadow: inset 0 0 0 1px rgba(220, 53, 69, 0.2); }
+        .toast-error .toast-progress, .toast-danger .toast-progress { background: #dc3545; }
+
+        .toast-info { border-color: rgba(13, 110, 253, 0.2); }
+        .toast-info .toast-icon { background: rgba(13, 110, 253, 0.15); color: #0d6efd; box-shadow: inset 0 0 0 1px rgba(13, 110, 253, 0.2); }
+        .toast-info .toast-progress { background: #0d6efd; }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    
+    {% if user.is_authenticated %}
+        {% include 'navbar.html' %}
+        {% include 'sidebar.html' %}
+    {% endif %}
+    
+    {% if messages %}
+        <div class="toast-container-custom">
+            {% for message in messages %}
+                <div class="premium-toast alert toast-{{ message.tags }} alert-dismissible swipeable-toast d-flex align-items-center" role="alert">
+                    
+                    <div class="toast-icon">
+                        {% if message.tags == 'success' %}
+                            <i class="fas fa-check-circle fs-5"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fas fa-exclamation-triangle fs-5"></i>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <i class="fas fa-times-circle fs-5"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle fs-5"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="toast-content">
+                        <div class="toast-title">
+                            {% if message.tags == 'error' or message.tags == 'danger' %}Error
+                            {% else %}{{ message.tags }}{% endif %}
+                        </div>
+                        <div class="toast-message">{{ message }}</div>
+                    </div>
+                    
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="toast-progress"></div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="{% if user.is_authenticated %}main-content{% endif %}">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.swipeable-toast');
+
+            toasts.forEach(toast => {
+                let isDragging = false;
+                let startX = 0;
+                let currentTranslate = 0;
+
+                // 1. Initialize Bootstrap Alert API and set auto-dismiss after 5 seconds
+                const bsAlert = new bootstrap.Alert(toast);
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        toast.style.transform = `translateX(100%)`;
+                        toast.style.opacity = '0';
+                        setTimeout(() => bsAlert.close(), 300);
+                    }
+                }, 5000); // 5000ms matches the CSS progress bar animation
+
+                // 2. Handle Drag Start
+                toast.addEventListener('pointerdown', (e) => {
+                    if (e.target.classList.contains('btn-close')) return; 
+                    
+                    isDragging = true;
+                    startX = e.clientX;
+                    toast.style.transition = 'none';
+                    toast.setPointerCapture(e.pointerId);
+                });
+
+                // 3. Handle Dragging
+                toast.addEventListener('pointermove', (e) => {
+                    if (!isDragging) return;
+                    const currentX = e.clientX;
+                    currentTranslate = currentX - startX;
+
+                    if (currentTranslate > 0) {
+                        toast.style.transform = `translateX(${currentTranslate}px)`;
+                        toast.style.opacity = 1 - (currentTranslate / 300);
+                    }
+                });
+
+                // 4. Handle Drag End (Release)
+                const handleDragEnd = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    toast.style.transition = 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease';
+
+                    if (currentTranslate > 100) {
+                        toast.style.transform = `translateX(100%)`;
+                        toast.style.opacity = '0';
+                        setTimeout(() => bsAlert.close(), 300);
+                    } else {
+                        toast.style.transform = 'translateX(0)';
+                        toast.style.opacity = '1';
+                    }
+                    currentTranslate = 0;
+                };
+
+                toast.addEventListener('pointerup', handleDragEnd);
+                toast.addEventListener('pointercancel', handleDragEnd);
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart School Attendance - Login</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0A1628;
+            --accent: #C9A84C;
+            --accent-light: #E8D38B;
+        }
+
+        * { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0A1628 0%, #1E2A44 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(10, 22, 40, 0.4);
+            max-width: 420px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), #1E2A44);
+            color: white;
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .school-icon {
+            width: 90px;
+            height: 90px;
+            background: rgba(255,255,255,0.15);
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.8rem;
+            box-shadow: 0 10px 30px rgba(201, 168, 76, 0.3);
+        }
+
+        .card-body { padding: 2.5rem 2.5rem 3rem; }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #475569;
+        }
+
+        .input-group-text {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-right: none;
+            color: var(--accent);
+        }
+
+        .form-control {
+            border: 1px solid #E2E8F0;
+            border-left: none;
+            padding: 14px 16px;
+            font-size: 1.05rem;
+            height: 54px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.15);
+        }
+        
+        /* Ensure inputs without borders on left still format correctly when invalid */
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none; /* Hide default bootstrap invalid icon to keep it clean */
+        }
+
+        .invalid-feedback {
+            display: none;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Show feedback when triggered */
+        .is-invalid ~ .invalid-feedback,
+        .d-block.invalid-feedback {
+            display: block;
+        }
+
+        .btn-gold {
+            background: linear-gradient(90deg, var(--accent), #E8D38B);
+            color: #0A1628;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(201, 168, 76, 0.35);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(201, 168, 76, 0.45);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            border-left: none;
+            border-right: 1px solid #E2E8F0;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card shadow-lg">
+            
+            <div class="card-header">
+                <div class="school-icon mx-auto">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2 class="logo-text mb-1 fw-bold">Smart School</h2>
+                <p class="mb-0 opacity-75" style="font-size: 1.05rem;">AI-Powered Attendance</p>
+            </div>
+
+            <div class="card-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form id="loginForm" method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label">USERNAME</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            {{ form.username }}
+                            <div id="usernameError" class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">PASSWORD</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            {{ form.password }}
+                            <span class="input-group-text password-toggle" id="togglePassword">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </span>
+                            <div id="passwordError" class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger py-3 small mb-4">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" id="submitBtn" class="btn btn-gold w-100 py-3 mt-3">
+                        <i class="fas fa-sign-in-alt me-2"></i> 
+                        <span id="btnText">SIGN IN SECURELY</span>
+                    </button>
+                </form>
+
+                <div class="text-center mt-5">
+                    <div class="d-flex align-items-center justify-content-center gap-2 text-muted small">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Mazbhoot Security</span>
+                    </div>
+                    <p class="text-muted mt-3 mb-0" style="font-size: 0.8rem;">
+                        © 2026 Smart School Attendance • All Rights Reserved
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const usernameField = document.querySelector('input[name="username"]');
+        const passwordField = document.querySelector('input[name="password"]');
+        const usernameError = document.getElementById('usernameError');
+        const passwordError = document.getElementById('passwordError');
+        const togglePassword = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        // Force Bootstrap classes on Django form inputs if they don't have them
+        if (usernameField && !usernameField.classList.contains('form-control')) usernameField.classList.add('form-control');
+        if (passwordField && !passwordField.classList.contains('form-control')) passwordField.classList.add('form-control');
+
+        // Password Toggle
+        togglePassword.addEventListener('click', () => {
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // Clear errors on input
+        usernameField.addEventListener('input', () => {
+            usernameField.classList.remove('is-invalid');
+            usernameError.classList.remove('d-block');
+        });
+        passwordField.addEventListener('input', () => {
+            passwordField.classList.remove('is-invalid');
+            passwordError.classList.remove('d-block');
+        });
+
+        // Custom Validation
+        function validateForm() {
+            let isValid = true;
+
+            // Reset states
+            usernameField.classList.remove('is-invalid');
+            passwordField.classList.remove('is-invalid');
+            usernameError.classList.remove('d-block');
+            passwordError.classList.remove('d-block');
+
+            // Username validation
+            if (!usernameField.value.trim()) {
+                usernameError.textContent = "Username is required";
+                usernameField.classList.add('is-invalid');
+                usernameError.classList.add('d-block');
+                isValid = false;
+            } else if (usernameField.value.trim().length < 3) {
+                usernameError.textContent = "Username must be at least 3 characters";
+                usernameField.classList.add('is-invalid');
+                usernameError.classList.add('d-block');
+                isValid = false;
+            }
+
+            // Password validation
+            if (!passwordField.value) {
+                passwordError.textContent = "Password is required";
+                passwordField.classList.add('is-invalid');
+                passwordError.classList.add('d-block');
+                isValid = false;
+            } else if (passwordField.value.length < 4) {
+                passwordError.textContent = "Password must be at least 4 characters";
+                passwordField.classList.add('is-invalid');
+                passwordError.classList.add('d-block');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Form Submit
+        form.addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                SIGNING IN...
+            `;
+        });
+    </script>
+</body>
+</html>

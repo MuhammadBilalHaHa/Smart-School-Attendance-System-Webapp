@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Logs{% endblock %}
+
+{% block content %}
+<!-- Enterprise Sub-Header Canvas -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom pb-3 mb-4">
+    <div>
+        <span class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.72rem; letter-spacing: 0.08em; color: #C9A84C;">
+            Mailing & Transmission Dispatch Logs
+        </span>
+        <h4 class="fw-bold mb-1" style="color: #0A1628; letter-spacing: -0.02em;">
+            <i class="fas fa-envelope me-2" style="color: #C9A84C;"></i> Email Notification Logs
+        </h4>
+        <p class="text-muted small mb-0">
+            <i class="fas fa-layer-group me-1"></i> {{ session.class_info }} 
+            <span class="mx-1 text-secondary opacity-50">•</span> 
+            <i class="far fa-calendar-alt me-1"></i> {{ session.attendance_date|date:"F d, Y" }}
+        </p>
+    </div>
+    <div class="mt-3 mt-md-0">
+        <a href="{% url 'attendance_summary' session.pk %}" class="btn btn-light border px-3 py-2 fw-semibold text-muted" style="border-radius: 8px; font-size: 0.88rem;">
+            <i class="fas fa-arrow-left me-2"></i> Return to Summary
+        </a>
+    </div>
+</div>
+
+<!-- Main System Logs Ledger Card -->
+<div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light border-bottom" style="background-color: #F8FAFC !important;">
+                <tr class="text-uppercase fw-bold tracking-wider text-muted" style="font-size: 0.72rem; letter-spacing: 0.03em;">
+                    <th class="py-3 ps-4">Student Profile</th>
+                    <th class="py-3">Endorsed Guardian</th>
+                    <th class="py-3">Recipient Routing Address</th>
+                    <th class="py-3">Notification Type</th>
+                    <th class="py-3">Delivery Status</th>
+                    <th class="py-3">Timestamp</th>
+                    <th class="py-3 pe-4">Error Metadata</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr class="log-row-hover" style="transition: background 0.15s ease;">
+                    <!-- Student Info Block -->
+                    <td class="py-3 ps-4">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle d-none d-sm-flex align-items-center justify-content-center border me-2.5" style="width: 30px; height: 30px; background-color: #F1F5F9; color: #4A5568;">
+                                <i class="fas fa-user-graduate" style="font-size: 0.75rem;"></i>
+                            </div>
+                            <div>
+                                <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">{{ log.student.full_name }}</span>
+                                <span class="text-muted d-block d-md-none" style="font-size: 0.7rem;">Guardian: {{ log.guardian_name|default:"—" }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    
+                    <!-- Guardian Profile (Hidden on mobile to prioritize space) -->
+                    <td class="py-3 d-none d-md-table-cell">
+                        <span class="text-dark fw-medium" style="font-size: 0.88rem;">{{ log.guardian_name|default:"—" }}</span>
+                    </td>
+                    
+                    <!-- Recipient Email -->
+                    <td class="py-3">
+                        <span class="font-monospace text-secondary" style="font-size: 0.82rem; letter-spacing: -0.01em;">{{ log.recipient_email }}</span>
+                    </td>
+                    
+                    <!-- Notification Type Badge Style Parameters -->
+                    <td class="py-3">
+                        {% if log.email_type == 'Present' %}
+                            <span class="badge rounded-pill fw-semibold border px-2.5 py-1.5" style="background-color: #E6F4EA; color: #137333; border-color: #C4eed0 !important; font-size: 0.75rem;">
+                                <i class="fas fa-circle me-1 small opacity-75"></i> Present
+                            </span>
+                        {% elif log.email_type == 'Absent' %}
+                            <span class="badge rounded-pill fw-semibold border px-2.5 py-1.5" style="background-color: #FCE8E6; color: #C5221F; border-color: #FAD2CF !important; font-size: 0.75rem;">
+                                <i class="fas fa-circle me-1 small opacity-75"></i> Absent
+                            </span>
+                        {% elif log.email_type == 'Late' %}
+                            <span class="badge rounded-pill fw-semibold border px-2.5 py-1.5" style="background-color: #FEF7E0; color: #B06000; border-color: #FCE8B2 !important; font-size: 0.75rem;">
+                                <i class="fas fa-circle me-1 small opacity-75"></i> Late
+                            </span>
+                        {% else %}
+                            <span class="badge rounded-pill fw-semibold border px-2.5 py-1.5 style-neutral-badge" style="font-size: 0.75rem;">
+                                {{ log.email_type }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Delivery Status Stack Logic -->
+                    <td class="py-3">
+                        {% if log.delivery_status == 'Sent' %}
+                            <span class="fw-bold d-inline-flex align-items-center" style="color: #198754; font-size: 0.85rem;">
+                                <i class="fas fa-check-circle me-1.5"></i> Transmitted
+                            </span>
+                        {% elif log.delivery_status == 'Failed' %}
+                            <span class="fw-bold d-inline-flex align-items-center" style="color: #DC3545; font-size: 0.85rem;">
+                                <i class="fas fa-times-circle me-1.5"></i> Interrupted
+                            </span>
+                        {% else %}
+                            <span class="fw-semibold d-inline-flex align-items-center text-warning" style="font-size: 0.85rem;">
+                                <i class="fas fa-spinner fa-spin me-1.5"></i> Queue Processing
+                            </span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Timestamp -->
+                    <td class="py-3">
+                        <span class="text-secondary font-monospace" style="font-size: 0.8rem;">{{ log.sent_at|date:"M d, H:i" }}</span>
+                    </td>
+                    
+                    <!-- System Error Output -->
+                    <td class="py-3 pe-4">
+                        {% if log.error_message %}
+                            <div class="p-2 border rounded border-danger-subtle bg-light-subtle" style="max-width: 200px; background-color: #FFF5F5;">
+                                <code class="text-danger small d-block tracking-tight" style="font-size: 0.72rem; line-height: 1.25;">
+                                    {{ log.error_message|truncatechars:50 }}
+                                </code>
+                            </div>
+                        {% else %}
+                            <span class="text-muted small opacity-50 font-monospace"><i class="fas fa-minus small"></i></span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <!-- Unified Ledger Empty State Template Blueprint -->
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <div class="my-4">
+                            <span class="fa-stack fa-lg text-muted opacity-25 mb-2">
+                                <i class="fas fa-circle fa-stack-2x text-light"></i>
+                                <i class="fas fa-mail-bulk fa-stack-1x text-dark"></i>
+                            </span>
+                            <h6 class="fw-bold mb-1 mt-2" style="color: #0A1628;">No Transmission Logs Registered</h6>
+                            <p class="text-muted small mx-auto mb-0" style="max-width: 380px;">
+                                There are no records generated for outbound automated server responses within this session boundary context.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    /* Professional Layout Micro-Interactions */
+    .log-row-hover:hover {
+        background-color: #F8FAFC !important;
+    }
+    .style-neutral-badge {
+        background-color: #F1F5F9;
+        color: #4A5568;
+        border-color: #E2E8F0 !important;
+    }
+</style>
+{% endblock %}

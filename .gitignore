@@ -1,0 +1,65 @@
+# ==================== PYTHON ====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# ==================== DJANGO ====================
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+mediafiles/
+staticfiles/
+collectstatic/
+
+# ==================== ENVIRONMENT ====================
+.env
+.env.local
+.env.production
+.venv
+pythonenv*
+
+# ==================== IDE ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==================== GIT ====================
+*.orig
+*.bak
+*.tmp
+
+# ==================== PROJECT SPECIFIC ====================
+# Student photos (sensitive data)
+media/studentsImages/
+# Database
+db.sqlite3
+# Face encodings (can be regenerated)
+*.npy
+*.pkl

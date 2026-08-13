@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Students Management Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom pb-3 mb-4 gap-3">
+    <div>
+        <span class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em; color: #C9A84C;">
+            Central Student Registry
+        </span>
+        <h4 class="fw-bold mb-1" style="color: #0A1628; letter-spacing: -0.02em;">
+            Students Management Portal
+        </h4>
+        <p class="text-muted mb-0 small">
+            View, filter, and manage all registered student profiles within the institution.
+        </p>
+    </div>
+    <a href="{% url 'student_add' %}" class="btn btn-gold px-4 py-2.5 fw-semibold d-inline-flex align-items-center shadow-sm">
+        <i class="fas fa-user-plus me-2"></i> Add New Student
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm mb-4 animate-fade-in" style="border-radius: 12px; border: 1px solid #EAECEF !important; background: #fbfbfc;">
+    <div class="card-body py-3">
+        <form method="GET" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <span class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                    <i class="fas fa-filter me-1"></i> Data Filters
+                </span>
+            </div>
+            <div class="col-sm-auto d-flex align-items-center gap-2">
+                <label class="form-label small mb-0 fw-medium text-secondary">Academic Grade:</label>
+                <select name="class" class="form-select form-select-sm border-2 custom-focus" onchange="this.form.submit()" style="border-radius: 8px; min-width: 180px;">
+                    <option value="">All Classes</option>
+                    {% for c in classes %}
+                        <option value="{{ c.pk }}" {% if request.GET.class == c.pk|stringformat:"s" %}selected{% endif %}>
+                            Grade {{ c.grade.grade_name }} - {{ c.section.section_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if request.GET.class %}
+            <div class="col-auto ms-auto ms-sm-0">
+                <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline-secondary px-3" style="border-radius: 8px;">
+                    <i class="fas fa-times me-1"></i> Clear Selection
+                </a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+    <div class="card-header bg-white border-bottom py-3 px-4">
+        <h6 class="mb-0 fw-bold d-flex align-items-center" style="color: #0A1628;">
+            <i class="fas fa-list-ul me-2 text-muted"></i> Student Directory
+        </h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 custom-table">
+                <thead>
+                    <tr class="text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                        <th class="ps-4">Reg No</th>
+                        <th>Student Name</th>
+                        <th>Gender</th>
+                        <th>Class Allocation</th>
+                        <th>Roll No</th>
+                        <th>Enrollment Status</th>
+                        <th class="text-end pe-4">System Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="fw-semibold ps-4 text-dark font-monospace" style="font-size: 0.85rem;">
+                            {{ student.registration_no }}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm rounded-circle bg-light border d-flex align-items-center justify-content-center me-2 text-gold">
+                                    <i class="fas fa-user-graduate small"></i>
+                                </div>
+                                <span class="fw-bold text-dark">{{ student.full_name }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if student.gender == 'Male' %}<i class="fas fa-mars text-primary me-1 opacity-75"></i> Male{% elif student.gender == 'Female' %}<i class="fas fa-venus text-danger me-1 opacity-75"></i> Female{% else %}<i class="fas fa-genderless text-muted me-1"></i> Other{% endif %}
+                        </td>
+                        <td>
+                            <span class="text-muted small">Grade</span> <span class="fw-medium text-dark">{{ student.student_class.grade.grade_name }}-{{ student.student_class.section.section_name }}</span>
+                        </td>
+                        <td>
+                            {% if student.roll_no %}
+                            <span class="badge bg-light text-dark border px-2.5 py-1.5 font-monospace" style="font-size: 0.75rem;">{{ student.roll_no }}</span>
+                            {% else %}
+                            <span class="text-muted opacity-50">&mdash;</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if student.status == 'Active' %}
+                            <span class="badge rounded-pill bg-success-light text-success px-3 py-1.5 fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.02em; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                <i class="fas fa-check-circle me-1"></i> ACTIVE
+                            </span>
+                            {% else %}
+                            <span class="badge rounded-pill bg-danger-light text-danger px-3 py-1.5 fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.02em; border: 1px solid rgba(239, 68, 68, 0.2);">
+                                <i class="fas fa-times-circle me-1"></i> INACTIVE
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group gap-1">
+                                <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-icon btn-outline-light border rounded" title="View Profile">
+                                    <i class="fas fa-eye text-muted"></i>
+                                </a>
+                                <a href="{% url 'student_edit' student.pk %}" class="btn btn-sm btn-icon btn-outline-light border rounded" title="Edit Profile">
+                                    <i class="fas fa-edit text-primary"></i>
+                                </a>
+                                <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-icon btn-outline-light border rounded" title="Delete Profile">
+                                    <i class="fas fa-trash text-danger"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="py-4">
+                                <div class="mb-3">
+                                    <span class="fa-stack fa-lg text-muted opacity-50">
+                                        <i class="fas fa-circle fa-stack-2x text-light"></i>
+                                        <i class="fas fa-user-graduate fa-stack-1x"></i>
+                                    </span>
+                                </div>
+                                <h6 class="fw-bold text-dark">No Students Records Identified</h6>
+                                <p class="text-muted small mx-auto mb-3" style="max-width: 320px;">
+                                    There are currently no registered student profiles matching your criteria within the system registry.
+                                </p>
+                                <a href="{% url 'student_add' %}" class="btn btn-gold btn-sm px-4">
+                                    <i class="fas fa-user-plus me-1"></i> Register First Student
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Premium Table Styling */
+    .custom-table thead th {
+        background-color: #fbfbfc;
+        border-bottom: 2px solid #eaecef;
+        color: #6c757d;
+        font-weight: bold;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    .custom-table tbody tr {
+        border-bottom: 1px solid #eaecef;
+        transition: background-color 0.15s ease;
+    }
+    .custom-table tbody td {
+        padding-top: 1.2rem;
+        padding-bottom: 1.2rem;
+    }
+    .custom-table tbody tr:hover {
+        background-color: #f1f4f9;
+    }
+    
+    /* Button with Icon styling */
+    .btn-icon {
+        width: 34px;
+        height: 34px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+    
+    /* Input Styling */
+    .custom-focus:focus {
+        border-color: #C9A84C !important;
+        box-shadow: 0 0 0 0.2rem rgba(201, 168, 76, 0.15) !important;
+    }
+    
+    /* Premium Avatar placeholder */
+    .avatar-sm {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    
+    /* Light badge styles */
+    .bg-success-light { background-color: rgba(16, 185, 129, 0.1); }
+    .bg-danger-light { background-color: rgba(239, 68, 68, 0.1); }
+    
+    /* Animation */
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

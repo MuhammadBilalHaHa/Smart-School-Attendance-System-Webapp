@@ -1,0 +1,167 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" 
+     style="background: linear-gradient(135deg, #070F19 0%, #0F1F3A 100%) !important; 
+            padding: 0.6rem 1.75rem; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            z-index: 1030;">
+    
+    <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center fw-bolder fs-4 premium-brand" href="{% url 'dashboard' %}" 
+           style="letter-spacing: -0.3px; color: #fff;">
+            <i class="fas fa-user-check me-3" 
+               style="color: #C9A84C; font-size:x-large; filter: drop-shadow(0 2px 6px rgba(201,168,76,0.4));"></i>
+            <span style="background: linear-gradient(90deg, #ffffff 40%, #E5D4A3 100%); -webkit-background-clip: text; font-size: x-large; -webkit-text-fill-color: transparent; font-weight: 1000; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                Smart Attendance System
+            </span>
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-3">
+                
+                <!-- Role Badge -->
+                <li class="nav-item">
+                    <span class="badge px-4 py-2 rounded-3 d-flex align-items-center gap-2 shadow-sm premium-badge" 
+                          style="background: linear-gradient(135deg, #C9A84C, #E5D4A3); 
+                                 color: #0A1628; 
+                                 font-weight: 700; 
+                                 font-size: 0.82rem;
+                                 letter-spacing: 0.5px;
+                                 box-shadow: 0 4px 15px rgba(201, 168, 76, 0.2) !important;">
+                        <i class="fas fa-shield-halved"></i> 
+                        {{ user.role }}
+                    </span>
+                </li>
+
+                <!-- User Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center text-white p-1 profile-trigger" 
+                       href="#" data-bs-toggle="dropdown" style="border-radius: 50px;">
+                        
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2 avatar-circle"
+                             style="width: 40px; height: 40px; 
+                                    background: linear-gradient(135deg, #C9A84C, #E5D4A3); 
+                                    color: #0A1628; 
+                                    font-weight: 700; 
+                                    font-size: 1.05rem;
+                                    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+                                    transition: all 0.3s ease;">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        
+                        <div class="d-none d-md-block text-start me-1">
+                            <div class="fw-semibold user-name-text" style="font-size: 0.95rem; color: #f8f9fa;">
+                                {{ user.get_full_name|default:user.username }}
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <!-- Compact Dropdown -->
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2 animate slideIn"
+    style="border-radius: 14px;
+           padding: 0.5rem;
+           background: #0F1F3A;
+           min-width: 230px;
+           border: 1px solid #6c757d !important;">
+                        
+                        <!-- Compact Profile Header -->
+                        <li class="px-3 py-2mb-1">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width: 42px; height: 42px; background: linear-gradient(135deg, #C9A84C, #E5D4A3); 
+                                            color: #0A1628; font-weight: 700; font-size: 1.2rem;">
+                                    {{ user.username|slice:":1"|upper }}
+                                </div>
+                                <div style="overflow: hidden;">
+                                    <h6 class="mb-0 text-white small text-truncate" style="font-weight: 600;">{{ user.get_full_name|default:user.username }}</h6>
+                                    <small class="text-white-50 d-block text-truncate" style="font-size: 0.75rem;">{{ user.email|default:"No email" }}</small>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li><hr class="dropdown-divider mx-2 my-2" style="border-color: rgba(255,255,255,0.08);"></li>
+                        
+                        <!-- Menu Items -->
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3" 
+                               href="{% url 'profile' %}">
+                                <i class="fas fa-cog text-warning" style="width: 16px;"></i>
+                                <span>Account Settings</span>
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 text-danger" 
+                               href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt" style="width: 16px;"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Premium Hover Dynamics */
+    .profile-trigger:hover .avatar-circle {
+        box-shadow: 0 0 0 5px rgba(201, 168, 76, 0.4) !important;
+        transform: scale(1.02);
+    }
+    
+    .premium-brand {
+        transition: transform 0.2s ease;
+    }
+    .premium-brand:hover {
+        transform: translateY(-1px);
+    }
+
+    .dropdown-item {
+        border-radius: 8px;
+        color: #d1d5db;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .dropdown-item:hover {
+        background: rgba(201, 168, 76, 0.12) !important;
+        transform: translateX(4px);
+        color: #fff;
+    }
+    
+    .dropdown-item.text-danger:hover {
+        background: rgba(220, 53, 69, 0.12) !important;
+        color: #ff7676;
+    }
+
+    /* Smooth dropdown animation */
+    @media (min-width: 992px) {
+        .animate {
+            animation-duration: 0.2s;
+            animation-fill-mode: both;
+        }
+        @keyframes slideIn {
+            0% {
+                transform: translateY(1rem);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0rem);
+                opacity: 1;
+            }
+        }
+        .slideIn {
+            animation-name: slideIn;
+        }
+    }
+</style>

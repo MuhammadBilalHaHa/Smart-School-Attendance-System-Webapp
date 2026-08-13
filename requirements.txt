@@ -1,0 +1,33 @@
+# Django Core
+Django==5.0.7
+
+# MySQL connector
+mysqlclient==2.2.4
+
+# Environment variables
+python-decouple==3.8
+
+# Image processing
+Pillow==10.4.0
+
+# Face recognition (AI part)
+opencv-python==4.10.0.84
+numpy==1.26.4
+face-recognition==1.3.0
+
+# Data handling
+pandas==2.2.2
+
+# API support
+djangorestframework==3.15.2
+
+# Security & Environment
+django-environ==0.11.2
+
+# Time handling
+pytz==2024.1
+
+# Bootstrap forms & UI enhancement
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.2
+django-widget-tweaks==1.5.0

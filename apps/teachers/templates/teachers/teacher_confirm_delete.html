@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Revoke Faculty Status{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-5 animate-fade-in">
+    <div class="col-md-6 col-lg-5">
+        
+        <!-- Navigation Back-Link -->
+        <div class="mb-3 text-center text-sm-start">
+            <a href="{% url 'teacher_list' %}" class="text-decoration-none text-secondary small fw-semibold tracking-wide text-uppercase d-inline-flex align-items-center gap-1 hover-gold">
+                <i class="fas fa-arrow-left" style="font-size: 0.75rem;"></i> Return to Faculty Ledger
+            </a>
+        </div>
+
+        <!-- Destructive Action Confirmation Card -->
+        <div class="card border-0 shadow-lg overflow-hidden text-center" style="border-radius: 16px; border: 1px solid #edf2f9 !important;">
+            <!-- Destructive Safety Indicator Bar -->
+            <div class="p-1" style="background-color: #dc3545;"></div>
+            
+            <div class="card-body p-4.5 bg-white">
+                
+                <!-- Dual-Layer Safety Icon Stack -->
+                <div class="mb-3.5 mt-2">
+                    <span class="fa-stack fa-2x text-danger">
+                        <i class="fas fa-circle fa-stack-2x light-danger-fallback"></i>
+                        <i class="fas fa-exclamation-triangle fa-stack-1x bounce-soft"></i>
+                    </span>
+                </div>
+
+                <!-- Contextual Header -->
+                <span class="text-uppercase font-monospace tracking-wider text-danger fw-bold d-block mb-1.5" style="font-size: 0.7rem;">
+                    System Security Override
+                </span>
+                <h5 class="fw-bold mb-2 text-dark" style="color: #0A1628; letter-spacing: -0.02em; font-size: 1.3rem;">
+                    Purge Faculty Record?
+                </h5>
+                
+                <!-- Informational Warning Statement -->
+                <p class="text-muted small px-3 mb-4">
+                    Are you certain you want to permanently delete the profile for 
+                    <strong class="text-dark fw-bold">{{ teacher.full_name }}</strong>? 
+                    This administrative process completely strips database allocations and revokes all active system privileges.
+                </p>
+
+                <!-- Informational Advisory Callout Box -->
+                <div class="text-start rounded-3 p-3 mb-4.5" style="background-color: rgba(220, 53, 69, 0.02); border: 1px dashed rgba(220, 53, 69, 0.25);">
+                    <p class="text-danger extra-small fw-semibold mb-0 d-flex align-items-start gap-2">
+                        <i class="fas fa-info-circle mt-0.5 fs-6"></i>
+                        <span>Irreversible Action: Once committed, linked attendance histories, account profile definitions, and security tokens mapped to this user cannot be restored.</span>
+                    </p>
+                </div>
+
+                <!-- Form Action Matrix -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-flex flex-column gap-2">
+                        <button type="submit" class="btn btn-purge py-2.5 fw-bold text-uppercase tracking-wide shadow-sm shrink-on-click" style="font-size: 0.8rem;">
+                            <i class="fas fa-trash-alt me-2"></i> Confirm and Purge Record
+                        </button>
+                        <a href="{% url 'teacher_list' %}" class="btn btn-cancel py-2.5 fw-semibold text-uppercase font-monospace tracking-wider" style="font-size: 0.75rem;">
+                            Abort and Cancel
+                        </a>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Premium Destructive UI Style Components */
+    .extra-small {
+        font-size: 0.72rem;
+        line-height: 1.4;
+    }
+    .p-4.5 { padding: 2.25rem !important; }
+    .mb-3.5 { margin-bottom: 0.85rem !important; }
+    .mb-4.5 { margin-bottom: 1.5rem !important; }
+    .mt-4.5 { margin-top: 1.5rem !important; }
+    .mb-1.5 { margin-bottom: 0.35rem !important; }
+    .tracking-wider { letter-spacing: 0.08em; }
+    
+    /* Soft Red Sub-layer Background Accent */
+    .light-danger-fallback {
+        color: rgba(220, 53, 69, 0.08) !important;
+    }
+    
+    /* Interactive Back Button States */
+    .hover-gold {
+        transition: color 0.15s ease-in-out;
+    }
+    .hover-gold:hover {
+        color: #C9A84C !important;
+    }
+    
+    /* Micro-Interactions */
+    .shrink-on-click:active {
+        transform: scale(0.98);
+    }
+    
+    /* Destructive Purge Button */
+    .btn-purge {
+        color: #fff;
+        background-color: #dc3545;
+        border: 1px solid #dc3545;
+        border-radius: 8px;
+        transition: all 0.15s ease-in-out;
+    }
+    .btn-purge:hover {
+        color: #fff;
+        background-color: #bb2d3b;
+        border-color: #b02a37;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+    }
+    
+    /* Secondary Cancel Action Design */
+    .btn-cancel {
+        color: #64748B;
+        background-color: transparent;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        transition: all 0.15s ease-in-out;
+    }
+    .btn-cancel:hover {
+        color: #1E293B;
+        background-color: #F8FAFC;
+        border-color: #CBD5E1;
+    }
+
+    /* Soft Entry Animation */
+    .animate-fade-in {
+        animation: deleteFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes deleteFadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Subtle Soft Pulse Alert Effect */
+    .bounce-soft {
+        animation: subtlePulse 3s infinite ease-in-out;
+    }
+    @keyframes subtlePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.04); }
+    }
+</style>
+{% endblock %}
