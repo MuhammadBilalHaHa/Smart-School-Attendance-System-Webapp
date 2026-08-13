@@ -247,4 +247,4 @@ This project demonstrates practical application of AI, computer vision, and web 
 
 ---
 
-**© 2026 Smart School Attendance System | Final Year Project**
+**© 2026 Smart School Attendance System | Muhammad Bilal**
