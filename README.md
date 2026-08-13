@@ -10,7 +10,7 @@ The Smart School Attendance System is an AI-powered automated attendance managem
 
 This system is developed as a role-based application where only two types of users exist: **Principal** and **Teachers**. The Principal acts as the system administrator with full control over users, classes, academic structure, and reports, while Teachers manage daily classroom attendance for their assigned classes.
 
-Built as a **Final Year Project (FYP)**, this system demonstrates the integration of Computer Vision (Face Recognition), Web Development (Django), Database Management, Email Automation, and Role-Based Access Control in a single production-ready application.
+, this system demonstrates the integration of Computer Vision (Face Recognition), Web Development (Django), Database Management, Email Automation, and Role-Based Access Control in a single production-ready application.
 
 ---
 
